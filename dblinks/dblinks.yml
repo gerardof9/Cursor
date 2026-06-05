@@ -1,0 +1,103 @@
+---
+- name: Playbook para obtener bases no productivas que apuntan a produccion
+  hosts: ora_desa
+  
+  tasks:
+    - name: Copia archivos
+      copy:
+        src: '{{item}}'
+        dest: /home/oracle/
+        owner: oracle
+        group: oinstall
+        mode: 0755
+      loop:
+        - "{{ playbook_dir }}/dblinks.sh"
+        - "{{ playbook_dir }}/ora_inst_prod.txt"
+       
+    - name: Ejecutar shell script  
+      shell: /home/oracle/dblinks.sh
+      notify:
+          - Eliminar archivos
+  
+  handlers: 
+    - name: Eliminar archivos
+      file:
+        path: '{{item}}'
+        state: absent
+      loop: 
+          - /home/oracle/dblinks.sh
+          - /home/oracle/ora_inst_prod.txt
+  
+- name: Unir varios archivos en uno
+  hosts: sopbd
+  vars: 
+     main_dir: /ora_scripts/logs/dblinks
+     
+  tasks: 
+      - name: Elimina archivo texto existente
+        file:
+          path: '{{ main_dir }}/dblinks.txt'
+          state: absent
+
+      - name: Ejecutar comando assemble texto
+        assemble:
+          src: '{{ main_dir }}'
+          dest: '{{ main_dir }}/dblinks.txt'
+          regexp: 'dblinks_.*\.txt'
+
+      - name: Ordenar reporte texto consolidado
+        shell: sort -o dblinks.txt dblinks.txt
+        args:
+          chdir: '{{ main_dir }}'
+
+      - name: Eliminar archivos texto fuente por host
+        shell: find . -name 'dblinks_*.txt' -exec rm -f {} \;
+        args:
+          chdir: '{{ main_dir }}'
+
+      - name: Elimina archivo HTML existente
+        file:
+          path: '{{ main_dir }}/dblinks.html'
+          state: absent
+
+      - name: Copiar cabecera y pie HTML
+        copy:
+          src: '{{ item }}'
+          dest: '{{ main_dir }}/'
+        loop:
+          - "{{ playbook_dir }}/dblinks_html_head.inc"
+          - "{{ playbook_dir }}/dblinks_html_foot.inc"
+
+      - name: Copiar script de resumen HTML
+        copy:
+          src: "{{ playbook_dir }}/dblinks_aggregate.sh"
+          dest: "{{ main_dir }}/dblinks_aggregate.sh"
+          mode: "0755"
+
+      - name: Ensamblar reporte HTML consolidado
+        shell: |
+          cat dblinks_html_head.inc > dblinks.html
+          ./dblinks_aggregate.sh >> dblinks.html
+          for f in dblinks_*.html; do
+            case "$f" in dblinks.html) continue ;; esac
+            awk '
+              /<div class="page">/ { depth = 1; print; next }
+              depth > 0 {
+                print
+                if ($0 ~ /<div[[:space:]]/) depth++
+                if ($0 ~ /<\/div>/) {
+                  depth--
+                  if (depth == 0) exit
+                }
+              }
+            ' "$f" >> dblinks.html
+          done
+          cat dblinks_html_foot.inc >> dblinks.html
+          rm -f dblinks_html_head.inc dblinks_html_foot.inc dblinks_aggregate.sh
+        args:
+          chdir: '{{ main_dir }}'
+
+      - name: Eliminar archivos HTML fuente por host
+        shell: find . -name 'dblinks_*.html' -exec rm -f {} \;
+        args:
+          chdir: '{{ main_dir }}'

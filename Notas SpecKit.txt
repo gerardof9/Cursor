@@ -1,0 +1,232 @@
+Etapas de la especificacion:
+---------------------------
+/constitution  -->  /specify  -->  /plan  -->  /tasks  -->  /implement
+
+                           /clarify                 /analyze
+						   
+
+Constitution (/speckit.constitution) - Reglas y lineamientos generales del proyecto. Buenas practicas, restricciones, principios de calidad etc ...
+
+Specify (/speckit.specify) - Especifica qué quiero hacer y por qué. NO cómo hacerlo. No entra en detalle sobre tecnologias o arquitectura, pero sí la experiencia de usuario. 
+							 Crea una nueva rama en git
+
+Plan (/speckit.plan) - Se indica la especificacion técnica de la solución. Frameworks, tipo de storage, third-party services, componentes UI etc. 
+
+Tasks (/speckit.tasks)
+
+Implement (/speckit.implement)
+
+
+** Proyecto guardiaWeb **
+
+[Constitution]
+
+/speckit.constitution Create a lightweight constitution for a simple internal web application that displays an on-call schedule from an Excel spreadsheet.
+
+The constitution should prioritize:
+- simplicity over over-engineering
+- readability and maintainability
+- incremental development
+- clean UI and user experience
+- minimal dependencies
+- fast local development
+- pragmatic AI-assisted coding practices
+
+Technical guidelines:
+- Use Next.js, React, TypeScript
+- Use shadcn/ui for UI components
+- Use FullCalendar for calendar views
+- Use SheetJS (xlsx) to parse Excel files
+- Prefer server-side or local parsing over complex backend services
+- Keep architecture simple and modular
+- Avoid premature abstraction
+- Avoid unnecessary wrappers and utility layers
+- Prefer small focused components
+
+Project constraints:
+- This is a read-only dashboard application
+- No authentication
+- No CRUD functionality
+- No database unless truly necessary
+- No microservices
+- No complex infrastructure
+
+Code quality principles:
+- Write clear and self-explanatory code
+- Prefer simple functions over deep abstractions
+- Keep files reasonably small
+- Use consistent naming conventions
+- Document only non-obvious logic
+
+Testing policy:
+- Do NOT generate unit tests
+- Focus on manual validation and functional verification during development
+
+AI workflow principles:
+- Break implementation into small incremental steps
+- Prefer iterative improvements over large one-shot generation
+- Always explain architectural decisions before implementing major changes
+- Keep prompts and plans concise and pragmatic
+
+Keep the constitution concise and practical, not enterprise-oriented.
+
+
+[Specify]
+
+/speckit.specify Esta aplicación debe ser una aplicación web interna para visualizar los turnos de guardia de un equipo técnico a partir de una planilla Excel existente.
+
+La aplicación debe permitir consultar de manera visual y sencilla quién está de guardia en cada período del año sin necesidad de abrir o editar la planilla manualmente.
+
+La pantalla principal debe mostrar un calendario o dashboard de guardias con posibilidad de navegar por:
+- día
+- semana
+- mes
+- año
+
+Cada período de guardia debe mostrar claramente:
+- nombre de la persona asignada
+- fecha de inicio
+- fecha de fin
+
+La aplicación debe leer automáticamente la información desde un archivo Excel que contiene una fila por cada semana o período de guardia.
+
+El usuario no debe poder modificar datos desde la aplicación. La aplicación es solamente de consulta y visualización.
+
+La experiencia debe ser rápida, simple y clara, pensada para uso interno diario por parte de un equipo técnico.
+
+La interfaz debe incluir:
+- navegación temporal simple
+- visualización clara de las guardias
+- colores o indicadores visuales para diferenciar personas
+- diseño moderno y limpio
+
+
+La aplicación debe permitir:
+- cambiar fácilmente entre vistas diaria, semanal, mensual y anual
+- buscar o filtrar por persona
+- identificar rápidamente quién está de guardia en una fecha determinada
+
+Las guardias activas en la fecha actual deben destacarse visualmente.
+
+El diseño visual debe ser moderno, minimalista y profesional, utilizando una interfaz clara y fácil de leer, evitando sobrecarga visual.
+
+
+[Clarify]
+
+La primer fila contiene los nombres de las columnas. Comienza en la celda (B,1) tiene 8 campos, que corresponden a los 7 dias de la semana comenzando los miércoles, y por último el nombre del técnico de guardia.
+Los nombres de estas columnas son  M, J, V, S, D, L, M y Persona
+A partir de la segunda fila, y comenzando en la columna 2, se muestran todos los dias del año, en cada fila  empieza una semana diferente, a partir del miercoles
+En la primer columna, cada vez que cambia el mes, se indica el mes actual, es decir de las siguientes semanas.
+
+           M	       J	       V	       S	       D	       L	       M	   Persona
+ENERO	24-12-25	25-12-25	26-12-25	27-12-25	28-12-25	29-12-25	30-12-25	Gerardo
+		31-12-25	01-01-26	02-01-26	03-01-26	04-01-26	05-01-26	06-01-26	Diego
+		07-01-26	08-01-26	09-01-26	10-01-26	11-01-26	12-01-26	13-01-26	Pablo
+		14-01-26	15-01-26	16-01-26	17-01-26	18-01-26	19-01-26	20-01-26	Diego
+		21-01-26	22-01-26	23-01-26	24-01-26	25-01-26	26-01-26	27-01-26	Gerardo
+		28-01-26	29-01-26	30-01-26	31-01-26	01-02-26	02-02-26	03-02-26	Enrique
+FEBRERO	04-02-26	05-02-26	06-02-26	07-02-26	08-02-26	09-02-26	10-02-26	Pablo
+		11-02-26	12-02-26	13-02-26	14-02-26	15-02-26	16-02-26	17-02-26	Enrique
+		18-02-26	19-02-26	20-02-26	21-02-26	22-02-26	23-02-26	24-02-26	Diego
+		25-02-26	26-02-26	27-02-26	28-02-26	01-03-26	02-03-26	03-03-26	Gerardo
+
+
+[Plan]
+
+/speckit.plan Create a technical implementation plan for a simple internal web application that visualizes on-call schedules from an Excel spreadsheet.
+
+Use:
+- Next.js
+- React
+- TypeScript
+- shadcn/ui
+- FullCalendar
+- SheetJS (xlsx)
+
+The application should:
+- read Excel data
+- display schedules in weekly, monthly and yearly views
+- support filtering by person
+- highlight active on-call assignments
+
+Define:
+- overall architecture
+- project structure
+- main components
+- dependency choices
+- data flow from Excel to UI
+- state management approach
+- responsive UI strategy
+
+Keep the architecture simple, modular and maintainable.
+Avoid unnecessary backend complexity, databases and over-engineering.
+
+Follow the principles defined in constitution.md.
+Do not generate implementation code yet.
+
+The plan should also:
+- divide implementation into small incremental phases
+- identify potential technical risks
+- suggest pragmatic simplifications where appropriate
+- recommend a clean MVP scope first
+
+Do not generate full implementation code yet.
+Focus on architecture, implementation strategy, project organization, and development workflow.
+Keep the plan pragmatic and appropriate for a first serious AI-assisted development project.
+
+No unit test, integration tests or e2e tests needed.
+
+
+
+
+Patrón	Qué resuelve	Cómo pedirlo
+Hero + calendario
+“¿Quién hoy?” en 3 segundos
+Banner grande con nombre + fechas; calendario debajo, altura fija
+Barra de herramientas única
+Menos ruido
+Una fila: vistas | persona | consulta fecha | Actualizar
+Sidebar de consulta (desktop)
+Consulta y calendario separados
+Izquierda: consulta + resultado; derecha: calendario
+Dashboard tipo “status”
+Claridad operativa
+Card principal tipo semáforo; resto colapsable
+shadcn blocks / themes
+Look coherente sin diseñar
+“Usar estilo shadcn dashboard block” o tema en ui.shadcn.com/themes
+No necesitas elegir uno solo; puedes decir: “patrón hero + toolbar única, inspirado en Google Calendar”.
+
+
+
+** Error al dar commit **
+
+Configuración global (recomendada)
+En una terminal (PowerShell o la de Cursor), sustituye el nombre por el que quieras que salga en los commits:
+
+git config --global user.name "Gerardo Fernandez Herrera"
+git config --global user.email "lapayota@yahoo.com"
+El user.email ya lo tienes; con definir user.name suele bastar:
+
+git config --global user.name "Tu Nombre Apellido"
+Comprueba:
+
+git config --global --list | Select-String "user\."
+Solo para este proyecto
+Si no quieres tocar la config global:
+
+cd "d:\repositorio\Cursor\demo\guardiaWeb"
+git config user.name "Tu Nombre Apellido"
+git config user.email "gfernandezh@ute.com.uy"
+
+Desde cualquier terminal, con el repo como carpeta actual (o ajustando la ruta):
+
+Para comitear un archivo:
+------------------------
+cd "d:\repositorio\cursor\proyectos\guardiaWeb"
+git add .specify/extensions/git/git-config.yml
+git commit -m "[Spec Kit] Enable auto-commit after constitution"
+Comprobar:
+
+git status
+git log -1 --oneline

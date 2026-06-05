@@ -1,0 +1,13 @@
+---
+ 
+ - name: Unir varios archivos en uno
+   hosts: sopbd
+   vars: 
+      main_dir: /ora_scripts/logs/dblinks
+      
+   tasks:  
+      - name: Ejecutar comando assemble
+        assemble:
+          src: '{{ main_dir }}'
+          dest: '{{ main_dir }}/dblinks.txt'
+          delimiter: '############################ \n\n'

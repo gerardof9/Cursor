@@ -1,0 +1,15 @@
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Por proyecto (ajusta según AgendaWeb, etc.)
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.*
+output/

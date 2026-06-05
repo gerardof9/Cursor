@@ -1,0 +1,32 @@
+---
+alwaysApply: true
+---
+
+<!-- SPECKIT START -->
+## GuardiaWeb — Active feature context
+
+**Plan**: `specs/001-guardia-dashboard/plan.md`  
+**Spec**: `specs/001-guardia-dashboard/spec.md`  
+**Branch**: `001-guardia-dashboard`
+
+### Stack (constitution-aligned)
+
+- Next.js App Router, React, TypeScript
+- shadcn/ui, FullCalendar, SheetJS (`xlsx`) — parse **server-side only**
+- No database, auth, CRUD, or automated tests unless constitution changes
+
+### Architecture (summary)
+
+- Excel file at `GUARDIA_EXCEL_PATH` → `lib/excel/parse-schedule.ts` → `ScheduleData`
+- UI: `ScheduleDashboard` (client) + FullCalendar; filter/refresh in React local state
+- Refresh: page reload or «Actualizar» via `router.refresh()` (no polling)
+- Default calendar view: **month**
+
+### Key docs
+
+- Data model: `specs/001-guardia-dashboard/data-model.md`
+- API contract: `specs/001-guardia-dashboard/contracts/schedule-api.md`
+- Quickstart / manual tests: `specs/001-guardia-dashboard/quickstart.md`
+
+Read the plan before major implementation decisions.
+<!-- SPECKIT END -->

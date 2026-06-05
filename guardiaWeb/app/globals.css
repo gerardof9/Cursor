@@ -1,0 +1,651 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Paleta exacta del modelo (#1e40af — blue-800, sin celeste ni violeta) */
+    --brand: #1e40af;
+    --brand-hover: #2563eb;
+    --brand-fg: #1e3a8a;
+    --navy: var(--brand-fg);
+    --hero-edge: #d4deec;
+    --hero-center: #e8edf3;
+    --hero-icon-bg: #e0e8f2;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 224 76% 40%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 42%;
+    --accent: 214 32% 96%;
+    --accent-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 224 76% 40%;
+    --radius: 1rem;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --warning-bg: 48 96% 95%;
+    --warning-fg: 32 50% 32%;
+    --page-bg: #f1f5f9;
+    --page-bg-alt: #e8eef4;
+    --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.05), 0 2px 8px rgb(15 23 42 / 0.06);
+    --shadow-card:
+      0 0 0 1px rgb(226 232 240 / 0.8),
+      0 1px 3px rgb(15 23 42 / 0.06),
+      0 8px 24px rgb(30 64 175 / 0.06);
+    --shadow-hero:
+      0 0 0 1px rgb(226 232 240 / 0.9),
+      0 4px 12px rgb(30 64 175 / 0.06),
+      0 12px 32px rgb(30 64 175 / 0.07);
+  }
+
+  .dark {
+    --brand-fg: #bfdbfe;
+    --hero-icon-bg: rgb(30 41 59 / 0.9);
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 98%;
+    --primary: 234 60% 55%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 234 60% 55%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
+    --warning-bg: 32 45% 14%;
+    --warning-fg: 45 90% 75%;
+    --page-bg: 222 47% 7%;
+    --page-bg-alt: 222 47% 9%;
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.2);
+    --shadow-card: 0 4px 24px rgb(0 0 0 / 0.28);
+    --shadow-hero: 0 8px 40px rgb(0 0 0 / 0.35);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    background: linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-alt) 100%);
+    @apply text-slate-900 antialiased dark:bg-background dark:text-foreground;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply mx-auto min-h-screen max-w-[1400px] space-y-8 p-6 md:space-y-10 md:p-10;
+  }
+
+  .app-card {
+    @apply rounded-2xl border border-slate-200/80 bg-white dark:border-border dark:bg-card;
+    box-shadow: var(--shadow-card);
+  }
+
+  .app-card-sidebar {
+    @apply rounded-2xl border border-slate-200/80 bg-white p-6 dark:border-border dark:bg-card;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Hero — degradé gris-azul (fondo) + layout 5 segmentos */
+  .hero-shell {
+    @apply relative overflow-hidden rounded-xl border border-slate-200/70;
+    background: linear-gradient(
+      90deg,
+      var(--hero-edge) 0%,
+      #dce5f0 22%,
+      var(--hero-center) 50%,
+      #dce5f0 78%,
+      var(--hero-edge) 100%
+    );
+    box-shadow: var(--shadow-hero);
+  }
+
+  .hero-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgb(30 64 175 / 0.14) 0%,
+      rgb(30 64 175 / 0.06) 28%,
+      rgb(30 64 175 / 0.02) 50%,
+      rgb(30 64 175 / 0.06) 72%,
+      rgb(30 64 175 / 0.14) 100%
+    );
+    pointer-events: none;
+  }
+
+  .dark .hero-shell {
+    @apply border-slate-700/50;
+    background: linear-gradient(
+      118deg,
+      rgb(15 23 42 / 0.9) 0%,
+      rgb(30 41 59 / 0.85) 50%,
+      rgb(30 58 138 / 0.4) 100%
+    );
+    box-shadow: var(--shadow-hero);
+  }
+
+  .hero-inner {
+    @apply relative z-10 flex flex-col gap-6 px-5 py-6 md:flex-row md:items-center md:justify-between md:gap-0 md:px-7 md:py-7 lg:px-9;
+  }
+
+  .hero-vdivider {
+    @apply hidden shrink-0 self-center md:block;
+    width: 1px;
+    height: 4.25rem;
+    background-color: rgb(148 163 184 / 0.55);
+  }
+
+  .hero-primary {
+    @apply flex min-w-0 shrink-0 flex-col gap-1 md:min-w-[13.5rem] md:max-w-[17rem];
+  }
+
+  .hero-eyebrow {
+    @apply text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400;
+  }
+
+  .hero-name {
+    @apply text-[2rem] font-bold leading-none tracking-tight text-navy;
+  }
+
+  .hero-primary-meta {
+    @apply mt-1.5 flex flex-wrap items-center gap-2.5;
+  }
+
+  .hero-date-range {
+    @apply inline-flex items-center gap-2 text-sm font-bold leading-none text-navy;
+  }
+
+  .hero-date-range-icon {
+    @apply h-[18px] w-[18px] shrink-0 text-[color:var(--brand)];
+  }
+
+  .hero-empty {
+    @apply text-base font-bold text-slate-500;
+  }
+
+  .hero-segment {
+    @apply flex shrink-0 items-center gap-3.5 md:px-4 lg:px-5;
+  }
+
+  .hero-segment-today {
+    @apply w-full shrink-0 flex-col items-stretch gap-2.5 md:w-auto md:min-w-[11.5rem] md:max-w-[12.5rem] md:px-3 lg:px-4;
+  }
+
+  .hero-icon-circle {
+    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-[color:var(--brand)];
+    background-color: var(--hero-icon-bg);
+    box-shadow:
+      inset 0 1px 3px rgb(255 255 255 / 0.55),
+      inset 0 -2px 4px rgb(30 64 175 / 0.1),
+      0 3px 10px rgb(30 64 175 / 0.24),
+      0 1px 4px rgb(30 64 175 / 0.18);
+  }
+
+  .hero-icon-circle svg {
+    @apply h-[22px] w-[22px];
+    stroke-width: 2.25;
+  }
+
+  .hero-stat-copy {
+    @apply flex min-w-0 flex-col gap-0.5;
+  }
+
+  .hero-stat-label {
+    @apply text-xs font-bold leading-tight text-slate-500;
+  }
+
+  .hero-stat-value {
+    @apply text-base font-bold leading-tight text-navy;
+  }
+
+  .hero-stat-value--success {
+    @apply font-bold text-emerald-600;
+  }
+
+  .hero-stat-value--accent {
+    @apply font-bold text-[color:var(--brand)];
+  }
+
+  .hero-stat-sub {
+    @apply text-xs font-bold leading-tight text-slate-500;
+  }
+
+  .hero-today-top {
+    @apply flex items-center gap-3;
+  }
+
+  .hero-today-icon {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600;
+    box-shadow:
+      inset 0 1px 3px rgb(255 255 255 / 0.65),
+      inset 0 -2px 3px rgb(16 185 129 / 0.12),
+      0 3px 8px rgb(16 185 129 / 0.28),
+      0 1px 3px rgb(16 185 129 / 0.2);
+  }
+
+  .hero-today-icon svg {
+    @apply h-5 w-5;
+    stroke-width: 2.25;
+  }
+
+  .hero-today-label {
+    @apply text-xs font-bold leading-tight text-emerald-600;
+  }
+
+  .hero-today-date {
+    @apply text-base font-bold leading-tight text-navy;
+  }
+
+  .hero-btn-today {
+    @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 self-start rounded-[5px] border border-slate-200/90 bg-white px-6 py-2.5 text-sm font-bold leading-none text-navy shadow-sm transition-colors hover:border-slate-200 hover:bg-white;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+  }
+
+  .hero-btn-today svg {
+    @apply h-[18px] w-[18px] shrink-0 text-navy;
+  }
+
+  .hero-today-trigger {
+    @apply flex w-full cursor-pointer items-center gap-3 rounded-lg border border-transparent bg-transparent p-0 text-left transition-colors hover:bg-white/40;
+  }
+
+  .dark .hero-name,
+  .dark .hero-stat-value,
+  .dark .hero-today-date {
+    @apply text-blue-100;
+  }
+
+  .dark .hero-btn-today {
+    @apply border-slate-600 bg-slate-800/80 text-blue-100 hover:bg-slate-800;
+  }
+
+  .dark .hero-btn-today svg {
+    @apply text-blue-100;
+  }
+
+  @media (max-width: 767px) {
+    .hero-segment,
+    .hero-segment-today {
+      @apply border-t border-slate-200/70 pt-6;
+    }
+  }
+
+  .text-navy {
+    color: var(--brand-fg);
+  }
+
+  .toolbar-label {
+    @apply text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500;
+  }
+
+  /* Barra de controles — referencia (botones rectangulares separados) */
+  .toolbar-shell {
+    @apply flex flex-wrap items-center gap-y-4 rounded-lg border border-slate-200/90 bg-white px-4 py-3.5 dark:border-border dark:bg-card md:flex-nowrap md:gap-y-0;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .toolbar-section {
+    @apply flex flex-col items-start gap-2 px-3 md:px-4;
+  }
+
+  .toolbar-section-label {
+    @apply block text-sm font-bold leading-tight text-slate-700 dark:text-slate-200;
+  }
+
+  .toolbar-section-controls {
+    @apply flex items-center gap-2.5;
+  }
+
+  .toolbar-divider {
+    @apply hidden w-px shrink-0 self-center md:block;
+    height: 2.75rem;
+    background-color: rgb(148 163 184 / 0.65);
+  }
+
+  .toolbar-spacer {
+    @apply hidden min-w-3 flex-1 md:block;
+  }
+
+  .toolbar-select {
+    @apply rounded-[5px] shadow-none;
+  }
+
+  .date-nav-box {
+    @apply inline-flex h-9 items-stretch divide-x divide-slate-200 overflow-hidden rounded-[5px] border border-slate-200 bg-white dark:divide-border dark:border-border dark:bg-muted;
+  }
+
+  .date-nav-btn {
+    @apply inline-flex w-9 shrink-0 items-center justify-center text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-accent dark:hover:text-slate-100;
+  }
+
+  .date-nav-title {
+    @apply flex min-w-[9.5rem] items-center justify-center px-3 text-sm font-semibold lowercase text-slate-800 dark:text-slate-100;
+  }
+
+  .btn-hoy {
+    @apply inline-flex h-9 items-center justify-center rounded-[5px] border bg-white px-4 text-sm font-bold leading-none transition-colors;
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+
+  .btn-hoy:hover {
+    background-color: rgb(30 64 175 / 0.06);
+  }
+
+  .dark .btn-hoy {
+    @apply border-blue-400 bg-slate-800/80 text-blue-200 hover:bg-slate-800;
+  }
+
+  .toolbar-refresh {
+    @apply shrink-0;
+  }
+
+  .section-title {
+    @apply text-[15px] font-semibold tracking-[-0.01em] text-slate-900 dark:text-slate-100;
+  }
+
+  .icon-well {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-navy;
+    background-color: var(--hero-icon-bg);
+  }
+
+  .dark .icon-well {
+    @apply bg-slate-800 text-blue-300;
+  }
+
+  .icon-well svg {
+    @apply h-[18px] w-[18px];
+    stroke-width: 2.25;
+  }
+
+  .input-field {
+    @apply flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-800 transition-all duration-200 placeholder:text-slate-400 focus-visible:bg-white focus-visible:outline-none focus-visible:ring-2 dark:border-input dark:bg-muted dark:text-slate-100 dark:placeholder:text-slate-500 dark:ring-border dark:focus-visible:bg-accent;
+  }
+
+  .input-field:focus-visible {
+    --tw-ring-color: rgb(30 64 175 / 0.22);
+  }
+
+  .btn-ghost-icon {
+    @apply flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition-all duration-200 hover:bg-slate-50 hover:text-slate-900 hover:shadow-sm dark:border-border dark:bg-card dark:text-slate-300 dark:ring-border dark:hover:bg-accent dark:hover:text-slate-100;
+  }
+
+  /* Botón primario — #1e40af sólido (modelo) */
+  .btn-primary-soft {
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-[5px] px-4 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:shadow-md active:scale-[0.98];
+    background-color: var(--brand);
+    box-shadow: 0 2px 8px rgb(30 64 175 / 0.22);
+  }
+
+  .btn-primary-soft:hover {
+    background-color: var(--brand-hover);
+    box-shadow: 0 3px 12px rgb(37 99 235 / 0.28);
+  }
+
+  .tab-group {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .tab-active {
+    @apply inline-flex h-9 items-center justify-center rounded-[5px] border border-transparent px-3.5 text-sm font-bold text-white transition-colors;
+    background-color: var(--brand);
+  }
+
+  .tab-inactive {
+    @apply inline-flex h-9 items-center justify-center rounded-[5px] border border-slate-200 bg-white px-3.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 dark:border-border dark:bg-muted dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-accent;
+  }
+
+  .toolbar-control {
+    @apply h-9;
+  }
+
+  .legend-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 transition-all duration-200 hover:border-slate-300 dark:border-border dark:bg-card dark:text-slate-300;
+  }
+
+  .legend-dot {
+    @apply h-2 w-2 shrink-0 rounded-full;
+  }
+}
+
+/* FullCalendar — reference contrast */
+.fc-theme-standard.guardia-fc {
+  --fc-border-color: rgb(226 232 240 / 0.7);
+  --fc-today-bg-color: rgb(219 234 254 / 0.45);
+  --fc-neutral-bg-color: transparent;
+  --fc-page-bg-color: transparent;
+  --fc-event-border-color: transparent;
+  font-family: inherit;
+}
+
+.dark .fc-theme-standard.guardia-fc {
+  --fc-border-color: hsl(var(--border));
+  --fc-today-bg-color: rgb(30 64 175 / 0.22);
+  --fc-neutral-bg-color: transparent;
+  --fc-page-bg-color: transparent;
+  color: hsl(var(--foreground));
+}
+
+.dark .fc-theme-standard.guardia-fc .fc,
+.dark .fc-theme-standard.guardia-fc .fc-view-harness,
+.dark .fc-theme-standard.guardia-fc .fc-scrollgrid,
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-body,
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day-frame {
+  background: transparent;
+}
+
+.fc-theme-standard.guardia-fc .fc-scrollgrid {
+  border: none !important;
+}
+
+.fc-theme-standard.guardia-fc .fc-scrollgrid,
+.fc-theme-standard.guardia-fc .fc-scrollgrid-section > td,
+.fc-theme-standard.guardia-fc .fc-scrollgrid-section > th {
+  border: none !important;
+}
+
+.fc-theme-standard.guardia-fc .fc-col-header-cell {
+  border: none !important;
+  background: transparent;
+  padding: 0.5rem 0 1.25rem;
+}
+
+.fc-theme-standard.guardia-fc .fc-col-header-cell-cushion {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(71 85 105);
+  text-decoration: none !important;
+  padding: 0;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-col-header-cell-cushion {
+  color: rgb(148 163 184);
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-day {
+  border-color: rgb(241 245 249) !important;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day {
+  border-color: hsl(var(--border)) !important;
+  background: transparent;
+}
+
+.fc-theme-standard.guardia-fc td.fc-daygrid-day {
+  border-width: 0 0 1px 0 !important;
+}
+
+.fc-theme-standard.guardia-fc tr:last-child td.fc-daygrid-day {
+  border-bottom: none !important;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-day-frame {
+  min-height: 7rem;
+  padding: 0.125rem;
+}
+
+.fc-theme-standard.guardia-fc .fc-day-other {
+  background: rgb(248 250 252);
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-day-other {
+  background: rgb(15 23 42 / 0.38);
+}
+
+.fc-theme-standard.guardia-fc .fc-day-other .fc-daygrid-day-number {
+  color: rgb(203 213 225);
+  font-weight: 400;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-day-other .fc-daygrid-day-number {
+  color: rgb(71 85 105);
+}
+
+/* Feriados — fondo rojo suave en la casilla */
+.fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday:not(.fc-day-other),
+.fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday:not(.fc-day-other) .fc-daygrid-day-frame {
+  background: rgb(254 226 226 / 0.9) !important;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday:not(.fc-day-other),
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday:not(.fc-day-other) .fc-daygrid-day-frame {
+  background: rgb(127 29 29 / 0.35) !important;
+}
+
+.fc-theme-standard.guardia-fc .fc-day-holiday:not(.fc-day-other) .fc-daygrid-day-number {
+  color: rgb(185 28 28);
+  font-weight: 700;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-day-holiday:not(.fc-day-other) .fc-daygrid-day-number {
+  color: rgb(252 165 165);
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday.fc-day-today:not(.fc-day-other),
+.fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday.fc-day-today:not(.fc-day-other) .fc-daygrid-day-frame {
+  background: rgb(254 202 202 / 0.95) !important;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday.fc-day-today:not(.fc-day-other),
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day.fc-day-holiday.fc-day-today:not(.fc-day-other) .fc-daygrid-day-frame {
+  background: rgb(153 27 27 / 0.45) !important;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-day-number {
+  padding: 0.75rem 0.875rem 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgb(51 65 85);
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-daygrid-day-number {
+  color: rgb(203 213 225);
+}
+
+.fc-theme-standard.guardia-fc .fc-day-today:not(.fc-day-holiday) {
+  background: rgb(219 234 254 / 0.5) !important;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-day-today:not(.fc-day-holiday) {
+  background: rgb(30 64 175 / 0.18) !important;
+}
+
+/* Hoy — círculo azul marino */
+.fc-theme-standard.guardia-fc .fc-day-today .fc-daygrid-day-number {
+  display: inline-flex;
+  height: 1.625rem;
+  width: 1.625rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--brand);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgb(30 64 175 / 0.3);
+  margin: 0.5rem 0.625rem 0;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-day-events {
+  margin-top: 0.125rem;
+  padding-bottom: 0.375rem;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-event {
+  margin: 2px 6px 3px !important;
+  padding: 0.1875rem 0.5rem !important;
+  min-height: 1.375rem !important;
+  border: none !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  line-height: 1.25rem !important;
+  color: white !important;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.12) !important;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgb(15 23 42 / 0.18) !important;
+  z-index: 2;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-event .fc-event-title {
+  font-weight: 600;
+  color: white !important;
+  padding: 0;
+}
+
+.fc-theme-standard.guardia-fc .fc-daygrid-event .fc-event-main {
+  display: flex;
+  align-items: center;
+}
+
+.fc-theme-standard.guardia-fc .fc-event.guard-event {
+  border: none !important;
+}
+
+.fc-theme-standard.guardia-fc .fc-event.guard-active {
+  box-shadow:
+    0 0 0 2px white,
+    0 0 0 3px rgb(30 64 175 / 0.35),
+    0 2px 6px rgb(30 64 175 / 0.2) !important;
+}
+
+.dark .fc-theme-standard.guardia-fc .fc-event.guard-active {
+  box-shadow:
+    0 0 0 2px hsl(var(--card)),
+    0 0 0 3px rgb(96 165 250 / 0.45),
+    0 2px 6px rgb(0 0 0 / 0.3) !important;
+}
+
+/* Event colors — reference saturation, white text */
+.fc-theme-standard.guardia-fc .guard-event--diego {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+}
+.fc-theme-standard.guardia-fc .guard-event--enrique {
+  background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+}
+.fc-theme-standard.guardia-fc .guard-event--gerardo {
+  background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%) !important;
+}
+.fc-theme-standard.guardia-fc .guard-event--pablo {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
+}

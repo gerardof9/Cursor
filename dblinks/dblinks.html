@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB Links Desarrollo a Produccion</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    color: #333;
+    background: #fafbfc;
+    margin: 2rem;
+    line-height: 1.35;
+  }
+
+  .report-wrap {
+    max-width: 960px;
+  }
+
+  .page {
+    box-sizing: border-box;
+    width: 100%;
+    background: #fff;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid #e8eef3;
+    margin-bottom: 1.5rem;
+  }
+
+  .report-title {
+    box-sizing: border-box;
+    width: 100%;
+    background: #e8f4fc;
+    padding: 0.75rem 1.75rem;
+    margin: 0 0 1rem;
+    border: 1px solid #e8eef3;
+    border-bottom: 1px solid #d6e9f5;
+    text-align: center;
+  }
+
+  .report-title h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1a4a6e;
+  }
+
+  .title-block {
+    background: #dceef8;
+    padding: 0.75rem 1rem;
+    margin: -1.5rem -1.75rem 1rem;
+    border-bottom: 1px solid #c5dff0;
+  }
+
+  .host {
+    color: #4a6a82;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .host strong {
+    font-weight: 700;
+    color: #1a4a6e;
+  }
+
+  h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #3d6a8a;
+    margin: 1.25rem 0 0.5rem;
+    padding: 0.35rem 0.65rem;
+    background: #eef7fc;
+    border-left: 3px solid #b8d9ed;
+  }
+
+  h2:first-of-type {
+    margin-top: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0.6rem;
+  }
+
+  th {
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4a6578;
+    padding: 0.3rem 0.5rem;
+    background: #f0f8fc;
+    border-bottom: 1px solid #d6e9f5;
+  }
+
+  td {
+    padding: 0.3rem 0.5rem;
+    vertical-align: top;
+    border-bottom: 1px solid #eef2f5;
+    line-height: 1.3;
+  }
+
+  td:first-child {
+    width: 140px;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.9rem;
+    color: #111;
+    background: #fafcfd;
+  }
+
+  .list {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.3;
+  }
+
+  .list span:not(:last-child)::after {
+    content: ", ";
+    color: #999;
+  }
+
+  .empty-msg {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="report-wrap">
+<div class="report-title">
+  <h1>DB Links Desarrollo a Produccion</h1>
+</div>
+<div class="page">
+  <h2>Resumen de accesos</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+  <tbody>
+      <tr><td>BDEXP1</td><td class="list"><span>BDIMAXD</span></td></tr>
+      <tr><td>BDEXP7</td><td class="list"><span>BDSIOFRM</span><span>BDSIOSAD</span><span>BDSIOTST</span></td></tr>
+      <tr><td>BDEXP8</td><td class="list"><span>BDSIOFRM</span><span>BDSIOPRE</span><span>BDSIOTST</span></td></tr>
+      <tr><td>BDMDMPRD</td><td class="list"><span>BDPMDMMTP29</span></td></tr>
+      <tr><td>BDSGE</td><td class="list"><span>BDIMAXD</span></td></tr>
+      <tr><td>BDSIOSB</td><td class="list"><span>BDSIOPRE</span></td></tr>
+      <tr><td>BIPRD</td><td class="list"><span>BDSIOFRM</span><span>BITST</span><span>CDCTST</span></td></tr>
+      <tr><td>BIPRDHA</td><td class="list"><span>BDSIOFRM</span><span>BDSIOTST</span><span>BITST</span></td></tr>
+      <tr><td>CBPRD29SVC</td><td class="list"><span>CBINEDEV</span></td></tr>
+      <tr><td>CBPRDSVC</td><td class="list"><span>BITST</span><span>CBDEVL</span><span>CCBDESAM</span><span>CCBTRN</span></td></tr>
+      <tr><td>CBSB1</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CBSB2</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CBSBSVC</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CCBPRD</td><td class="list"><span>BDPMDMMTP29</span><span>BITST</span></td></tr>
+      <tr><td>CDCPRD</td><td class="list"><span>BDSIOFRM</span><span>BDSIOSAD</span><span>BDSIOTST</span><span>BITST</span></td></tr>
+      <tr><td>DWHEXP01</td><td class="list"><span>BDPMDMMTP29</span></td></tr>
+      <tr><td>DWHEXP04</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>DWHEXPW</td><td class="list"><span>BDSIOFRM</span><span>BDSIOTST</span></td></tr>
+      <tr><td>S1OEXSVC</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMPRD</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMSB</td><td class="list"><span>BITST</span><span>CBTSTVF1</span></td></tr>
+      <tr><td>WMSB1</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMSB2</td><td class="list"><span>BITST</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>bicomtstbd1</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>BITST</td><td class="list"><span>BIPRDHA</span><span>DWHEXP04</span><span>WMSB2</span><span>WMSB1</span><span>WMPRD</span><span>CBSBSVC</span><span>WMSB</span><span>CBPRDSVC</span><span>CCBPRD</span><span>CDCPRD</span><span>BIPRD</span><span>S1OEXSVC</span><span>CBSB2</span><span>CBSB1</span></td></tr>
+      <tr><td>CDCTST</td><td class="list"><span>BIPRD</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>BIPRD</td><td class="list"><span>BITST</span><span>CDCTST</span></td></tr>
+      <tr><td>BIPRDHA</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CBPRDSVC</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CBSB1</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CBSB2</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CBSBSVC</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CCBPRD</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>CDCPRD</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>DWHEXP04</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>S1OEXSVC</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMPRD</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMSB</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMSB1</td><td class="list"><span>BITST</span></td></tr>
+      <tr><td>WMSB2</td><td class="list"><span>BITST</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>ccbdevbd</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>CBDEVL</td><td class="list"><span>CBPRDSVC</span></td></tr>
+      <tr><td>CCBDESAM</td><td class="list"><span>CBPRDSVC</span></td></tr>
+      <tr><td>CCBTRN</td><td class="list"><span>CBPRDSVC</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>CBPRDSVC</td><td class="list"><span>CBDEVL</span><span>CCBDESAM</span><span>CCBTRN</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>ccbdevbd01</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>CBINEDEV</td><td class="list"><span>CBPRD29SVC</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>CBPRD29SVC</td><td class="list"><span>CBINEDEV</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>ccbtstbd1</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>CBTSTVF1</td><td class="list"><span>WMSB</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>WMSB</td><td class="list"><span>CBTSTVF1</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>mdmtstbd2</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>BDPMDMMTP29</td><td class="list"><span>BDMDMPRD</span><span>CCBPRD</span><span>DWHEXP01</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>BDMDMPRD</td><td class="list"><span>BDPMDMMTP29</span></td></tr>
+      <tr><td>CCBPRD</td><td class="list"><span>BDPMDMMTP29</span></td></tr>
+      <tr><td>DWHEXP01</td><td class="list"><span>BDPMDMMTP29</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>oradevmxbd</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>BDIMAXD</td><td class="list"><span>BDSGE</span><span>BDEXP1</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>BDEXP1</td><td class="list"><span>BDIMAXD</span></td></tr>
+      <tr><td>BDSGE</td><td class="list"><span>BDIMAXD</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="page">
+  <div class="title-block">
+    <p class="host">HOST: <strong>siotrnbd2</strong></p>
+  </div>
+  <h2>Por base no productiva</h2>
+  <table>
+    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>
+    <tbody>
+      <tr><td>BDSIOFRM</td><td class="list"><span>BIPRDHA</span><span>DWHEXPW</span><span>BIPRD</span><span>BDEXP8</span><span>CDCPRD</span><span>BDEXP7</span></td></tr>
+      <tr><td>BDSIOPRE</td><td class="list"><span>BDSIOSB</span><span>BDEXP8</span></td></tr>
+      <tr><td>BDSIOSAD</td><td class="list"><span>CDCPRD</span><span>BDEXP7</span></td></tr>
+      <tr><td>BDSIOTST</td><td class="list"><span>BIPRDHA</span><span>DWHEXPW</span><span>BDEXP8</span><span>BDEXP7</span><span>CDCPRD</span></td></tr>
+    </tbody>
+  </table>
+  <h2>Por base de produccion</h2>
+  <table>
+    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>
+    <tbody>
+      <tr><td>BDEXP7</td><td class="list"><span>BDSIOFRM</span><span>BDSIOSAD</span><span>BDSIOTST</span></td></tr>
+      <tr><td>BDEXP8</td><td class="list"><span>BDSIOFRM</span><span>BDSIOPRE</span><span>BDSIOTST</span></td></tr>
+      <tr><td>BDSIOSB</td><td class="list"><span>BDSIOPRE</span></td></tr>
+      <tr><td>BIPRD</td><td class="list"><span>BDSIOFRM</span></td></tr>
+      <tr><td>BIPRDHA</td><td class="list"><span>BDSIOFRM</span><span>BDSIOTST</span></td></tr>
+      <tr><td>CDCPRD</td><td class="list"><span>BDSIOFRM</span><span>BDSIOSAD</span><span>BDSIOTST</span></td></tr>
+      <tr><td>DWHEXPW</td><td class="list"><span>BDSIOFRM</span><span>BDSIOTST</span></td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+</body>
+</html>
