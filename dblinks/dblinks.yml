@@ -97,6 +97,28 @@
         args:
           chdir: '{{ main_dir }}'
 
+      - name: Verificar reporte HTML consolidado
+        stat:
+          path: "{{ main_dir }}/dblinks.html"
+        register: dblinks_html
+
+      - name: Enviar reporte HTML por correo
+        shell: |
+          (
+           echo "From: BaseDeDatos@aplicaciones.ute"
+           echo "To: SopBD@ute.com.uy"
+           echo "Subject: DB Links Desarrollo a Produccion"
+           echo "MIME-Version: 1.0"
+           echo "Content-Type: text/html; charset=UTF-8"
+           echo ""
+           cat dblinks.html
+          ) | /usr/lib/sendmail -t
+        args:
+          chdir: '{{ main_dir }}'
+        when:
+          - dblinks_html.stat.exists
+          - dblinks_html.stat.size > 0
+
       - name: Eliminar archivos HTML fuente por host
         shell: find . -name 'dblinks_*.html' -exec rm -f {} \;
         args:
