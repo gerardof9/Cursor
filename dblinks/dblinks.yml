@@ -50,17 +50,12 @@
         args:
           chdir: '{{ main_dir }}'
 
-      - name: Eliminar archivos texto fuente por host
-        shell: find . -name 'dblinks_*.txt' -exec rm -f {} \;
-        args:
-          chdir: '{{ main_dir }}'
-
       - name: Elimina archivo HTML existente
         file:
           path: '{{ main_dir }}/dblinks.html'
           state: absent
 
-      - name: Copiar cabecera y pie HTML
+      - name: Copiar plantillas HTML
         copy:
           src: '{{ item }}'
           dest: '{{ main_dir }}/'
@@ -68,32 +63,19 @@
           - "{{ playbook_dir }}/dblinks_html_head.inc"
           - "{{ playbook_dir }}/dblinks_html_foot.inc"
 
-      - name: Copiar script de resumen HTML
+      - name: Copiar script generacion HTML
         copy:
-          src: "{{ playbook_dir }}/dblinks_aggregate.sh"
-          dest: "{{ main_dir }}/dblinks_aggregate.sh"
+          src: "{{ playbook_dir }}/dblinks_build_html.sh"
+          dest: "{{ main_dir }}/dblinks_build_html.sh"
           mode: "0755"
 
-      - name: Ensamblar reporte HTML consolidado
-        shell: |
-          cat dblinks_html_head.inc > dblinks.html
-          ./dblinks_aggregate.sh >> dblinks.html
-          for f in dblinks_*.html; do
-            case "$f" in dblinks.html) continue ;; esac
-            awk '
-              /<div class="page">/ { depth = 1; print; next }
-              depth > 0 {
-                print
-                if ($0 ~ /<div[[:space:]]/) depth++
-                if ($0 ~ /<\/div>/) {
-                  depth--
-                  if (depth == 0) exit
-                }
-              }
-            ' "$f" >> dblinks.html
-          done
-          cat dblinks_html_foot.inc >> dblinks.html
-          rm -f dblinks_html_head.inc dblinks_html_foot.inc dblinks_aggregate.sh
+      - name: Generar reporte HTML desde archivos texto
+        shell: ./dblinks_build_html.sh
+        args:
+          chdir: '{{ main_dir }}'
+
+      - name: Limpiar archivos auxiliares HTML
+        shell: rm -f dblinks_html_head.inc dblinks_html_foot.inc dblinks_build_html.sh
         args:
           chdir: '{{ main_dir }}'
 
@@ -119,7 +101,7 @@
           - dblinks_html.stat.exists
           - dblinks_html.stat.size > 0
 
-      - name: Eliminar archivos HTML fuente por host
-        shell: find . -name 'dblinks_*.html' -exec rm -f {} \;
+      - name: Eliminar archivos texto fuente por host
+        shell: find . -name 'dblinks_*.txt' -exec rm -f {} \;
         args:
           chdir: '{{ main_dir }}'
