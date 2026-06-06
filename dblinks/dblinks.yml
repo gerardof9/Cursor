@@ -84,22 +84,24 @@
           path: "{{ main_dir }}/dblinks.html"
         register: dblinks_html
 
-      - name: Enviar reporte HTML por correo
-        shell: |
-          (
-           echo "From: BaseDeDatos@aplicaciones.ute"
-           echo "To: SopBD@ute.com.uy"
-           echo "Subject: DB Links Desarrollo a Produccion"
-           echo "MIME-Version: 1.0"
-           echo "Content-Type: text/html; charset=UTF-8"
-           echo ""
-           cat dblinks.html
-          ) | /usr/lib/sendmail -t
+      - name: Copiar script envio correo
+        copy:
+          src: "{{ playbook_dir }}/dblinks_send_mail.sh"
+          dest: "{{ main_dir }}/dblinks_send_mail.sh"
+          mode: "0755"
+
+      - name: Enviar reporte HTML adjunto por correo
+        shell: ./dblinks_send_mail.sh
         args:
           chdir: '{{ main_dir }}'
         when:
           - dblinks_html.stat.exists
           - dblinks_html.stat.size > 0
+
+      - name: Limpiar script envio correo
+        file:
+          path: '{{ main_dir }}/dblinks_send_mail.sh'
+          state: absent
 
       - name: Eliminar archivos texto fuente por host
         shell: find . -name 'dblinks_*.txt' -exec rm -f {} \;

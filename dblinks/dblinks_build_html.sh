@@ -45,32 +45,22 @@ fi
 sort -u "${ROWS}" > "${ROWS}.sorted"
 mv "${ROWS}.sorted" "${ROWS}"
 
-html_table_header()
+html_spans()
 {
-    _col1="$1"
-    _col2="$2"
-    echo '<table border="1" cellspacing="0" cellpadding="4" width="100%" style="border-collapse:collapse;font-family:Consolas,monospace;font-size:13px;">'
-    echo '<colgroup><col width="140" style="width:140px"><col style="width:480px"></colgroup>'
-    echo '<tr>'
-    echo "<th align=\"left\" style=\"padding:4px 8px;background:#f0f8fc;font-size:12px;font-weight:bold;\">${_col1}</th>"
-    echo "<th align=\"left\" style=\"padding:4px 8px;background:#f0f8fc;font-size:12px;font-weight:bold;\">${_col2}</th>"
-    echo '</tr>'
-}
-
-html_table_row()
-{
-    _col1="$1"
-    _col2="$2"
-    echo "<tr><td valign=\"top\" style=\"padding:4px 8px;font-size:13px;background:#fafcfd;\">${_col1}</td><td valign=\"top\" style=\"padding:4px 8px;font-size:13px;\">${_col2}</td></tr>"
+    _html=""
+    for _n in $1; do
+        _html="${_html}<span>${_n}</span>"
+    done
+    echo "${_html}"
 }
 
 html_summary()
 {
-    echo '<div class="page" style="margin-bottom:10px;">'
-    echo '<table border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;border-collapse:collapse;border:1px solid #e8eef3;">'
-    echo '<tr><td style="background:#eef7fc;padding:6px 8px;font-weight:bold;font-size:12px;color:#3d6a8a;border-bottom:1px solid #d6e9f5;">Resumen de accesos</td></tr>'
-    echo '<tr><td style="padding:8px;">'
-    html_table_header "BD Producción" "Apuntada por"
+    echo '<div class="page">'
+    echo '  <h2>Resumen de accesos</h2>'
+    echo '  <table>'
+    echo '    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>'
+    echo '  <tbody>'
 
     awk -F'|' '
     {
@@ -89,13 +79,13 @@ html_summary()
         _insts=`awk -F'|' -v prod="${_prod}" '
         {
             if ($3 == prod) print $2
-        }' "${ROWS}" | sort -u | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g'`
-        html_table_row "${_prod}" "${_insts}"
+        }' "${ROWS}" | sort -u | tr '\n' ' ' | sed 's/ $//'`
+        _list=`html_spans "${_insts}"`
+        echo "      <tr><td>${_prod}</td><td class=\"list\">${_list}</td></tr>"
     done
 
-    echo '</table>'
-    echo '</td></tr>'
-    echo '</table>'
+    echo '    </tbody>'
+    echo '  </table>'
     echo '</div>'
 }
 
@@ -103,13 +93,15 @@ html_host_block()
 {
     _host="$1"
 
-    echo '<div class="page" style="margin-bottom:10px;">'
-    echo '<table border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;border-collapse:collapse;border:1px solid #e8eef3;">'
-    echo "  <tr><td style=\"background:#dceef8;padding:6px 8px;font-size:12px;color:#4a6a82;border-bottom:1px solid #c5dff0;border-top:2px solid #c5dff0;\">HOST: <strong style=\"color:#1a4a6e;\">${_host}</strong></td></tr>"
-    echo '  <tr><td style="padding:8px;">'
+    echo '<div class="page">'
+    echo '  <div class="title-block">'
+    echo "    <p class=\"host\">HOST: <strong>${_host}</strong></p>"
+    echo '  </div>'
 
-    echo '  <p style="font-size:12px;font-weight:bold;color:#3d6a8a;background:#eef7fc;padding:4px 8px;margin:0 0 4px;border-left:3px solid #b8d9ed;">Por base no productiva</p>'
-    html_table_header "No productiva" "Apunta a"
+    echo '  <h2>Por base no productiva</h2>'
+    echo '  <table>'
+    echo '    <thead><tr><th>No productiva</th><th>Apunta a</th></tr></thead>'
+    echo '    <tbody>'
 
     awk -F'|' -v host="${_host}" '
     $1 == host {
@@ -122,14 +114,18 @@ html_host_block()
     while read _desa
     do
         _prods=`awk -F'|' -v host="${_host}" -v desa="${_desa}" '
-        $1 == host && $2 == desa { print $3 }' "${ROWS}" | sort -u | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g'`
-        html_table_row "${_desa}" "${_prods}"
+        $1 == host && $2 == desa { print $3 }' "${ROWS}" | sort -u | tr '\n' ' ' | sed 's/ $//'`
+        _list=`html_spans "${_prods}"`
+        echo "      <tr><td>${_desa}</td><td class=\"list\">${_list}</td></tr>"
     done
 
-    echo '</table>'
+    echo '    </tbody>'
+    echo '  </table>'
 
-    echo '  <p style="font-size:12px;font-weight:bold;color:#3d6a8a;background:#eef7fc;padding:4px 8px;margin:10px 0 4px;border-left:3px solid #b8d9ed;">Por base de produccion</p>'
-    html_table_header "BD Producción" "Apuntada por"
+    echo '  <h2>Por base de produccion</h2>'
+    echo '  <table>'
+    echo '    <thead><tr><th>BD Producción</th><th>Apuntada por</th></tr></thead>'
+    echo '    <tbody>'
 
     awk -F'|' -v host="${_host}" '
     $1 == host {
@@ -142,12 +138,12 @@ html_host_block()
     while read _prod
     do
         _desas=`awk -F'|' -v host="${_host}" -v prod="${_prod}" '
-        $1 == host && $3 == prod { print $2 }' "${ROWS}" | sort -u | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g'`
-        html_table_row "${_prod}" "${_desas}"
+        $1 == host && $3 == prod { print $2 }' "${ROWS}" | sort -u | tr '\n' ' ' | sed 's/ $//'`
+        _list=`html_spans "${_desas}"`
+        echo "      <tr><td>${_prod}</td><td class=\"list\">${_list}</td></tr>"
     done
 
-    echo '</table>'
-    echo '  </td></tr>'
+    echo '    </tbody>'
     echo '  </table>'
     echo '</div>'
 }
