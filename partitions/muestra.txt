@@ -1,0 +1,140 @@
+=== bicomprdbd1 ===
+
+-- biprd --
+
+OWNER              TABLE_NAME                          ULTIMA_PARTICION          VALOR_LIMITE    MESES_RESTANTES
+------------------ ----------------------------------- ------------------------- --------------- ---------------
+DWHCBODI           DW_DT_ACTIVIDAD_CAMPO_ODI           P_202612                  2027-01-01      7.0
+DWHCBODI           DW_DT_FACTURA_ODI                   P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_ACTIVIDAD_PENDIENTE           P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_AJUSTES                       P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_AS_HIST                       P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_ASIGNACION                    P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CARGO_FACTURABLE              P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CARGO_PENDIENTE_FACTURAR      P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CASOS                         P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CASOS_CONV                    P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CASOS_REABIERTOS              P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CICLO_ACTIVIDAD               P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CONGELADO_MES_ACT             P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_CONTRATACIONES                P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_DEUDA                         P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_DOC_IMP                       P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION                   P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_AUDIT             P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_AUDIT_ALTA        P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_BKUP_VAL          P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_PROMEDIO_INI      P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_PROMEDIOS         P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_PROMEDIOS2        P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_FACTURACION_RESUMEN           P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_IMPUESTOS                     P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_IRREGULARIDADES               P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_LECTURAS                      P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_PAGOS                         P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_REC_SOL_DEN                   P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_TRANS_FINANCIERAS             P_202612                  2027-01-01      7.0
+DWHCBODI           DW_FT_VENTAS_ENERGIA                P_202612                  2027-01-01      7.0
+DWHCBODI           PROTECCION_VTAS_CONSUMOS            P_202612                  2027-01-01      7.0
+DWHCBODI           VAL_FACTURAS_CCB                    P_202612                  2027-01-01      7.0
+DWHCBODI           VAL_FACTURAS_FALTANTES              P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_DT_ACTIVIDAD_CAMPO               P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_DT_FACTURA                       P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_ACTIVIDAD_PENDIENTE           P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_AJUSTES                       P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_AS_HIST                       P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_ASIGNACION                    P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CARGO_FACTURABLE              P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CARGO_PENDIENTE_FACTURAR      P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CASOS                         P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CASOS_CONV                    P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CASOS_REABIERTOS              P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CICLO_ACTIVIDAD               P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CONGELADO_MES_ACT             P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_CONTRATACIONES                P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_DEUDA                         P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_DEUDA_INC_CUENTA              P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_DEUDA_RESUMEN                 P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_DOC_IMP                       P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION                   P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_AUDIT             P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_AUDIT_ALTA        P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_BKUP_VAL          P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_PROMEDIO_INI      P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_PROMEDIOS         P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_PROMEDIOS2        P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_FACTURACION_RESUMEN           P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_IMPUESTOS                     P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_IRREGULARIDADES               P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_LECTURAS                      P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_PAGOS                         P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_PAGOS_ANIO_MES                P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_REC_SOL_DEN                   P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_TRANS_FINANCIERAS             P_202612                  2027-01-01      7.0
+DWHCBPRD           DW_FT_VENTAS_ENERGIA                P_202612                  2027-01-01      7.0
+DWHCBPRD           PROTECCION_VTAS_CONSUMOS            P_202612                  2027-01-01      7.0
+DWHCBPRD           VAL_FACTURAS_CCB                    P_202612                  2027-01-01      7.0
+DWHCBPRD           VAL_FACTURAS_FALTANTES              P_202612                  2027-01-01      7.0
+
+=== ccbprdbd1 ===
+
+-- ccbprd1 --
+
+OWNER              TABLE_NAME                          ULTIMA_PARTICION          VALOR_LIMITE    MESES_RESTANTES
+------------------ ----------------------------------- ------------------------- --------------- ---------------
+CISADM             CM_ORIGINAL_FACTURA                 ENERO2027                 202701          7.0
+
+=== ccbprdbd6 ===
+
+-- cbprd291 --
+
+OWNER              TABLE_NAME                          ULTIMA_PARTICION          VALOR_LIMITE    MESES_RESTANTES
+------------------ ----------------------------------- ------------------------- --------------- ---------------
+CISADM             CM_ORIGINAL_FACTURA                 ENERO2027                 202701          7.0
+
+=== kaifaprdbd5 ===
+
+-- kaifaprd --
+
+OWNER              TABLE_NAME                          ULTIMA_PARTICION          VALOR_LIMITE    MESES_RESTANTES
+------------------ ----------------------------------- ------------------------- --------------- ---------------
+KAIFANEWHESPRD     M_DATA_VIEW_LP                      P_MDVLP_20260630          2026-07-01      1.0
+KAIFANEWHESPRD     H_LOG_DEVICE_PING                   P_HLDPING_20260630        2026-07-01      1.0
+KAIFANEWHESPRD     I_DATA_SHARE_QUALITY                P_IDSQ_20260630           2026-07-01      1.0
+KAIFANEWHESPRD     H_TASK_RUN_HIS                      P_HTRH_20260630           2026-07-01      1.0
+KAIFANEWHESPRD     H_LOG_DEVICE_PING_DETAIL            P_HLDPINGD_20260630       2026-07-01      1.0
+KAIFANEWHESPRD     I_DATA_SHARE_ENERGY                 P_IDSE_20260630           2026-07-01      1.0
+KAIFANEWHESPRD     I_DATA_SHARE_EVENT                  P_IDSET_202612            2027-01-01      7.0
+KAIFANEWHESPRD     I_DATA_SHARE_MONTHLY                P_IDSM_202612             2027-01-01      7.0
+KAIFANEWHESPRD     M_DATA_VIEW_DAILY                   P_MDVD_202612             2027-01-01      7.0
+KAIFANEWHESPRD     M_DATA_VIEW_MONTHLY                 P_MDVM_2026               2027-01-01      7.0
+KAIFANEWHESPRD     M_ENERGY_COL_BY_REGION_D            P_MECBRD_202612           2027-01-01      7.0
+KAIFANEWHESPRD     M_ENERGY_COL_BY_REGION_LP           P_MECBRLP_202612          2027-01-01      7.0
+KAIFANEWHESPRD     M_ENERGY_COL_METER_DAILY            P_MECMD_202612            2027-01-01      7.0
+KAIFANEWHESPRD     M_ENERGY_COL_METER_LP               P_MECMLP_202612           2027-01-01      7.0
+KAIFANEWHESPRD     M_ENERGY_COL_METER_MONTHLY          P_MECMM_2026              2027-01-01      7.0
+KAIFANEWHESPRD     I_DATA_SHARE_DAILY                  P_IDSD_202612             2027-01-01      7.0
+KAIFANEWHESPRD     H_DATA_ONOFF_LOG_METER              P_HDOLM_202612_3          2027-01-01      7.0
+KAIFANEWHESPRD     H_DATA_ONOFF_LOG_COMM_DEVICE        P_HDOLCD_202612           2027-01-01      7.0
+KAIFANEWHESPRD     H_DATA_EVENT_V                      P_HDEV_202612_3           2027-01-01      7.0
+KAIFANEWHESPRD     WS_SCHEDULE_TASK_LOG                P_WSTL_202612             2027-01-01      7.0
+KAIFANEWHESPRD     C_LOG_INTERFACE                     P_CLI_202612              2027-01-01      7.0
+KAIFANEWHESPRD     C_LOG_INTERFACE_DETAIL              P_CLID_202612             2027-01-01      7.0
+
+=== priprdbd01 ===
+
+-- bdpriprd --
+
+OWNER              TABLE_NAME                          ULTIMA_PARTICION          VALOR_LIMITE    MESES_RESTANTES
+------------------ ----------------------------------- ------------------------- --------------- ---------------
+DATANODOPRD        DN_METERS_MAIN                      DN_METERS_MAIN_202612     2027-01-01      7.0
+
+=== sioprdbd01 ===
+
+-- bdexpsio --
+
+OWNER              TABLE_NAME                          ULTIMA_PARTICION          VALOR_LIMITE    MESES_RESTANTES
+------------------ ----------------------------------- ------------------------- --------------- ---------------
+SIOEXP             SIO_TABLAS_URSEA                    SIO_TAB_URSEA_202612      2027-01-01      7.0
+SIOEXP             SIO_HISTS_DATOS_ELEM_RED_HIST       P_202612                  2027-01-01      7.0
+

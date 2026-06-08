@@ -1,0 +1,89 @@
+---
+   - name: Ejecucion script para ejecutar consultas
+    
+     hosts: ora_prod_primaria
+     vars: 
+        shell_file: /home/oracle/partitions.sh
+     tasks: 
+      - name: Copia shell script
+        copy:
+          src: '{{item}}'
+          dest: /home/oracle/
+          owner: oracle
+          group: oinstall
+          mode: 0755
+        loop:
+        - "{{ playbook_dir }}/partitions.sh"
+       
+      - name: Ejecuta script para ejecutar consulta
+        shell: '{{ shell_file }}'
+        async: 300       # Tiempo máximo para la tarea (5 minutos)
+        poll: 10         # Intervalo de verificación (cada 10 segundos)
+        notify:
+         - Eliminar shell script del host
+     
+     handlers: 
+        - name: Eliminar shell script del host
+          file:
+             path: '{{ shell_file }}'
+             state: absent       
+     
+   - hosts: sopbd
+     vars: 
+        main_dir: /ora_scripts/logs/querieslog/
+        main_file: "all_partitions_{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}.txt"
+        full_path: "{{ main_dir }}/{{ main_file }}"
+        
+     tasks:         
+       - name: Chequea si hay archivos para ensamblar
+         find:
+           paths: '{{ main_dir }}'
+           patterns: 'partitions*.txt'
+         register: out
+ 
+       - name: Si hay archivas ensambla y envia corrreo
+         block:
+          - name: Ensambla
+            assemble:
+              src: '{{ main_dir }}'
+              dest: '{{ main_dir }}/{{main_file}}'
+              regexp: '^partitions*'
+
+          - name: Copia script de reporte
+            copy:
+              src: "{{ playbook_dir }}/partitions_report.sh"
+              dest: "{{ main_dir }}/partitions_report.sh"
+              mode: 0755
+
+          - name: Normaliza fin de linea del script de reporte
+            shell: tr -d '\r' < ./partitions_report.sh > ./partitions_report.sh.tmp && mv ./partitions_report.sh.tmp ./partitions_report.sh && chmod 755 ./partitions_report.sh
+            args:
+              chdir: '{{ main_dir }}'
+ 
+          - name: Envia correo
+            shell: |
+              (
+               echo "From: BaseDeDatos@aplicaciones.ute"
+               echo "To: SopBD@ute.com.uy"
+               echo "Subject: Reporte de tablas particionadas"
+               echo "Content-Type: text/html"
+               echo ""
+               echo "<html>"
+               echo "<body>"
+               echo "<pre style='font-family: monospace; font-size: 12px;'>"
+               ksh ./partitions_report.sh ./{{ main_file }} 2>&1 || cat ./{{ main_file }} 2>&1
+               echo "</pre>"
+               echo "</body>"
+               echo "</html>"
+               ) | /usr/lib/sendmail -t
+            args:
+              chdir: '{{ main_dir }}'
+            
+         when: out.matched != 0
+         
+       - name: Elimina archivos auxiliares
+         shell: rm -f partitions_*.txt all_partitions_*.txt partitions_report.sh
+         args:
+           chdir: '{{ main_dir }}'
+         when: out.matched != 0
+     
