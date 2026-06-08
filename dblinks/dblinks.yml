@@ -97,6 +97,7 @@
         when:
           - dblinks_html.stat.exists
           - dblinks_html.stat.size > 0
+          - ansible_date_time.hour == '11'
 
       - name: Limpiar script envio correo
         file:
