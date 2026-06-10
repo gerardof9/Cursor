@@ -98,3 +98,14 @@ Empty start (in-session open):
 ## Reporting Issues
 
 Record: binlog MySQL version, file size, operation performed, expected vs actual. Attach anonymized screenshot of status bar + list headers if UI issue.
+
+## Manual Validation Results
+
+| Scenario | Date | Result | Notes |
+|----------|------|--------|-------|
+| VS-1 Open Binlogs | — | PENDING | Requires Go toolchain + sample binlogs |
+| VS-2 Browse Events | — | PENDING | |
+| VS-3 Inspect Details | — | PENDING | |
+| VS-4 Filter Events | — | PENDING | |
+| VS-5 Investigate Activity | — | PENDING | |
+| VS-6 Performance | — | PENDING | |

@@ -25,9 +25,9 @@
 
 **Purpose**: Project initialization and dependency setup
 
-- [ ] T001 Create project directory structure (`cmd/binlog-explorer/`, `internal/events/`, `internal/explorer/`, `internal/filters/`, `internal/sources/mysql/`, `internal/ui/`) per `specs/002-explore-binlog-events/plan.md`
-- [ ] T002 Initialize `go.mod` (Go 1.22+) with dependencies: `bubbletea`, `bubbles`, `lipgloss`, `go-mysql-org/go-mysql` in repository root
-- [ ] T003 [P] Add `.gitignore` for `bin/`, `binlog-explorer`, and OS artifacts at repository root
+- [x] T001 Create project directory structure (`cmd/binlog-explorer/`, `internal/events/`, `internal/explorer/`, `internal/filters/`, `internal/sources/mysql/`, `internal/ui/`) per `specs/002-explore-binlog-events/plan.md`
+- [x] T002 Initialize `go.mod` (Go 1.22+) with dependencies: `bubbletea`, `bubbles`, `lipgloss`, `go-mysql-org/go-mysql` in repository root
+- [x] T003 [P] Add `.gitignore` for `bin/`, `binlog-explorer`, and OS artifacts at repository root
 
 ---
 
@@ -37,12 +37,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 [P] Define `Operation` and `ReplicationFormat` types in `internal/events/types.go` per `specs/002-explore-binlog-events/data-model.md`
-- [ ] T005 [P] Define `EventSummary`, `EventDetail`, and `RowChange` structs in `internal/events/event.go` per `specs/002-explore-binlog-events/data-model.md`
-- [ ] T006 Create `ExplorerSession` struct with source registry and empty index in `internal/explorer/session.go`
-- [ ] T007 [P] Implement key map and help metadata in `internal/ui/keys.go` per `specs/002-explore-binlog-events/contracts/keybindings.md`
-- [ ] T008 Create root `tea.Model` with split-pane layout shell in `internal/ui/app.go` per `specs/002-explore-binlog-events/contracts/ui-layout.md`
-- [ ] T009 Create application entry point launching empty TUI in `cmd/binlog-explorer/main.go`
+- [x] T004 [P] Define `Operation` and `ReplicationFormat` types in `internal/events/types.go` per `specs/002-explore-binlog-events/data-model.md`
+- [x] T005 [P] Define `EventSummary`, `EventDetail`, and `RowChange` structs in `internal/events/event.go` per `specs/002-explore-binlog-events/data-model.md`
+- [x] T006 Create `ExplorerSession` struct with source registry and empty index in `internal/explorer/session.go`
+- [x] T007 [P] Implement key map and help metadata in `internal/ui/keys.go` per `specs/002-explore-binlog-events/contracts/keybindings.md`
+- [x] T008 Create root `tea.Model` with split-pane layout shell in `internal/ui/app.go` per `specs/002-explore-binlog-events/contracts/ui-layout.md`
+- [x] T009 Create application entry point launching empty TUI in `cmd/binlog-explorer/main.go`
 
 **Checkpoint**: `go build ./cmd/binlog-explorer` succeeds; empty split-pane TUI launches and quits with `q`
 
@@ -56,12 +56,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Implement `BinlogSource` open, validation, and state tracking in `internal/sources/mysql/source.go`
-- [ ] T011 [US1] Add `OpenSource(path)` and source list accessors to `internal/explorer/session.go`
-- [ ] T012 [US1] Implement CLI argument parsing, TTY check, and launch-time file open in `cmd/binlog-explorer/main.go` per `specs/002-explore-binlog-events/contracts/cli.md`
-- [ ] T013 [US1] Implement in-session path input modal in `internal/ui/openfile.go` (triggered by `o`)
-- [ ] T014 [US1] Wire open-file flow, per-file errors, and status bar messages in `internal/ui/app.go`
-- [ ] T015 [US1] Document VS-1 validation results in `specs/002-explore-binlog-events/quickstart.md` (append pass/fail notes section)
+- [x] T010 [US1] Implement `BinlogSource` open, validation, and state tracking in `internal/sources/mysql/source.go`
+- [x] T011 [US1] Add `OpenSource(path)` and source list accessors to `internal/explorer/session.go`
+- [x] T012 [US1] Implement CLI argument parsing, TTY check, and launch-time file open in `cmd/binlog-explorer/main.go` per `specs/002-explore-binlog-events/contracts/cli.md`
+- [x] T013 [US1] Implement in-session path input modal in `internal/ui/openfile.go` (triggered by `o`)
+- [x] T014 [US1] Wire open-file flow, per-file errors, and status bar messages in `internal/ui/app.go`
+- [x] T015 [US1] Document VS-1 validation results in `specs/002-explore-binlog-events/quickstart.md` (append pass/fail notes section)
 
 **Checkpoint**: Open one or two binlog files via CLI and in-session; sources visible in status; invalid paths show status error; app remains usable. Event list not required for US1 completion.
 
@@ -75,11 +75,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T016 [P] [US2] Implement stream indexer mapping `RowsEvent`/`QueryEvent` to `EventSummary` in `internal/sources/mysql/indexer.go` (skip housekeeping per `research.md`; propagate mid-read errors without crashing session)
-- [ ] T017 [US2] Add index merge, chronological sort, `tea.Msg` batch updates, and source `error` state on indexer failure in `internal/explorer/session.go`
-- [ ] T018 [US2] Implement event list view with TIME/OP/SCHEMA/TABLE/SRC columns in `internal/ui/list.go`
-- [ ] T019 [US2] Wire list navigation (↑/↓/PgUp/PgDn/Home/End), indexing progress, empty-source state, empty-index message (no user-data events), and per-source error status in `internal/ui/app.go` (target < 100ms perceived nav per `plan.md`)
-- [ ] T020 [US2] Document VS-2 validation results in `specs/002-explore-binlog-events/quickstart.md`
+- [x] T016 [P] [US2] Implement stream indexer mapping `RowsEvent`/`QueryEvent` to `EventSummary` in `internal/sources/mysql/indexer.go` (skip housekeeping per `research.md`; propagate mid-read errors without crashing session)
+- [x] T017 [US2] Add index merge, chronological sort, `tea.Msg` batch updates, and source `error` state on indexer failure in `internal/explorer/session.go`
+- [x] T018 [US2] Implement event list view with TIME/OP/SCHEMA/TABLE/SRC columns in `internal/ui/list.go`
+- [x] T019 [US2] Wire list navigation (↑/↓/PgUp/PgDn/Home/End), indexing progress, empty-source state, empty-index message (no user-data events), and per-source error status in `internal/ui/app.go` (target < 100ms perceived nav per `plan.md`)
+- [x] T020 [US2] Document VS-2 validation results in `specs/002-explore-binlog-events/quickstart.md`
 
 **Checkpoint**: Events appear progressively; list is chronological across multiple sources; keyboard navigation works
 
@@ -93,11 +93,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T021 [P] [US3] Implement on-demand `EventDetail` loader from file offset in `internal/sources/mysql/detail.go`
-- [ ] T022 [US3] Add selection state and single-entry detail cache to `internal/explorer/session.go`
-- [ ] T023 [US3] Implement detail viewport (header, SQL/rows, completeness notes) in `internal/ui/detail.go`
-- [ ] T024 [US3] Wire async detail load on selection with loading indicator in `internal/ui/app.go`
-- [ ] T025 [US3] Document VS-3 validation results in `specs/002-explore-binlog-events/quickstart.md`
+- [x] T021 [P] [US3] Implement on-demand `EventDetail` loader from file offset in `internal/sources/mysql/detail.go`
+- [x] T022 [US3] Add selection state and single-entry detail cache to `internal/explorer/session.go`
+- [x] T023 [US3] Implement detail viewport (header, SQL/rows, completeness notes) in `internal/ui/detail.go`
+- [x] T024 [US3] Wire async detail load on selection with loading indicator in `internal/ui/app.go`
+- [x] T025 [US3] Document VS-3 validation results in `specs/002-explore-binlog-events/quickstart.md`
 
 **Checkpoint**: Selecting events populates detail pane; statement events note missing row images when applicable
 
@@ -111,11 +111,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T026 [P] [US4] Implement `FilterCriteria` and AND-apply logic with inclusive time bounds in `internal/filters/filter.go`
-- [ ] T027 [US4] Add `ApplyFilter`, `ClearFilter`, and `Filtered` index computation to `internal/explorer/session.go`
-- [ ] T028 [US4] Implement filter editor modal (operation, schema, table, time range) in `internal/ui/filterbar.go`
-- [ ] T029 [US4] Wire `f`/`c` keybindings and filtered list rendering in `internal/ui/app.go` and `internal/ui/list.go`
-- [ ] T030 [US4] Document VS-4 validation results in `specs/002-explore-binlog-events/quickstart.md`
+- [x] T026 [P] [US4] Implement `FilterCriteria` and AND-apply logic with inclusive time bounds in `internal/filters/filter.go`
+- [x] T027 [US4] Add `ApplyFilter`, `ClearFilter`, and `Filtered` index computation to `internal/explorer/session.go`
+- [x] T028 [US4] Implement filter editor modal (operation, schema, table, time range) in `internal/ui/filterbar.go`
+- [x] T029 [US4] Wire `f`/`c` keybindings and filtered list rendering in `internal/ui/app.go` and `internal/ui/list.go`
+- [x] T030 [US4] Document VS-4 validation results in `specs/002-explore-binlog-events/quickstart.md`
 
 **Checkpoint**: Filters narrow the list correctly; `c` restores full index; zero-match shows empty state message
 
@@ -129,10 +129,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T031 [US5] Implement selection reconciliation on filter change (nearest match or clear with status) in `internal/explorer/session.go`
-- [ ] T032 [US5] Enhance status bar with filtered/total counts, active filter summary, and indexing % in `internal/ui/app.go`
-- [ ] T033 [US5] Ensure detail inspection works on filtered results and empty-filter UX in `internal/ui/list.go` and `internal/ui/detail.go`
-- [ ] T034 [US5] Document VS-5 and VS-6 validation results in `specs/002-explore-binlog-events/quickstart.md`
+- [x] T031 [US5] Implement selection reconciliation on filter change (nearest match or clear with status) in `internal/explorer/session.go`
+- [x] T032 [US5] Enhance status bar with filtered/total counts, active filter summary, and indexing % in `internal/ui/app.go`
+- [x] T033 [US5] Ensure detail inspection works on filtered results and empty-filter UX in `internal/ui/list.go` and `internal/ui/detail.go`
+- [x] T034 [US5] Document VS-5 and VS-6 validation results in `specs/002-explore-binlog-events/quickstart.md`
 
 **Checkpoint**: Complete investigation scenario ("what happened to table X between A and B?") without external tools
 
@@ -142,8 +142,8 @@
 
 **Purpose**: Help, terminal guards, exit codes, and full manual validation pass
 
-- [ ] T035 [P] Implement help overlay (`?`) and minimum 80×24 terminal guard in `internal/ui/app.go`
-- [ ] T036 [P] Implement exit codes and `--help`/`--version` flags in `cmd/binlog-explorer/main.go` per `specs/002-explore-binlog-events/contracts/cli.md`
+- [x] T035 [P] Implement help overlay (`?`) and minimum 80×24 terminal guard in `internal/ui/app.go`
+- [x] T036 [P] Implement exit codes and `--help`/`--version` flags in `cmd/binlog-explorer/main.go` per `specs/002-explore-binlog-events/contracts/cli.md`
 - [ ] T037 Run full manual validation checklist (VS-1 through VS-6) and record outcomes in `specs/002-explore-binlog-events/quickstart.md`
 
 ---
