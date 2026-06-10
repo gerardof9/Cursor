@@ -123,6 +123,8 @@ go.sum
 3. Merge summaries from all sources; sort by timestamp (stable tie-break: source path + offset).
 4. Render sortable list with columns: time, operation, schema, table, source file (abbreviated).
 5. Keyboard navigation: ↑/↓, PgUp/PgDn, Home/End; cursor always visible.
+6. On indexer mid-read failure: mark source `error`, show status message; other sources remain usable.
+7. On housekeeping-only or empty-of-changes binlog: show empty-index message; keep source registered.
 
 ### Phase C — Inspect Detail (P3)
 

@@ -26,13 +26,13 @@ As a DBA, I want to open one or more MySQL binary log files so that I can inspec
 
 **Why this priority**: No exploration is possible until binlog files are loaded. This is the entry point for every investigation workflow.
 
-**Independent Validation**: Launch the application, open two known binlog files from a test environment, and confirm both are accepted and represented as available sources for exploration.
+**Independent Validation**: Launch the application, open two known binlog files from a test environment, and confirm both are accepted and registered as sources (visible in session status). Event list population is validated under User Story 2.
 
 **Acceptance Scenarios**:
 
-1. **Given** the application is started with one or more binlog file paths as CLI arguments, **When** launch completes, **Then** those files are loaded and their events are available for exploration.
-2. **Given** the application is running, **When** the DBA opens an additional valid binlog file from within the TUI, **Then** the file is loaded and its events join the current exploration session.
-3. **Given** one binlog file is already open, **When** the DBA adds a second valid binlog file (via CLI at launch or in-session open), **Then** events from both files are available within the same exploration session.
+1. **Given** the application is started with one or more binlog file paths as CLI arguments, **When** launch completes, **Then** those files are validated, opened, and registered as sources ready for indexing.
+2. **Given** the application is running, **When** the DBA opens an additional valid binlog file from within the TUI, **Then** the file is registered as a source in the current session.
+3. **Given** one binlog file is already open, **When** the DBA adds a second valid binlog file (via CLI at launch or in-session open), **Then** both sources are registered within the same exploration session.
 4. **Given** the DBA provides an invalid or unreadable file (via CLI or in-session open), **When** open is attempted, **Then** the application reports a clear error without crashing and allows the DBA to try another file.
 
 ---
@@ -104,15 +104,15 @@ As a DBA, I want to move quickly between filtered results and event details so t
 
 ### Edge Cases
 
-- What happens when a binlog file is empty or contains no user-data change events (only housekeeping events)?
+- What happens when a binlog file is empty or contains no user-data change events (only housekeeping events)? *(Resolved: show empty-index message in list area; source remains registered.)*
 - How does the system handle very large binlog files (millions of events) without becoming unusable? *(Resolved: stream-parse with lightweight index; detail on selection.)*
 - What happens when binlog files use different format versions or character sets?
 - How does the application present statement-based events where row-level before/after data is not available?
 - What happens when a single binlog file contains a mix of row-based and statement-based events?
-- How does the system behave when one of multiple open files fails mid-read?
-- What happens when filters match zero events?
+- How does the system behave when one of multiple open files fails mid-read? *(Resolved: mark affected source as error, show status message, keep session and other sources usable.)*
+- What happens when filters match zero events? *(Resolved: show empty-filter message in list area; detail pane cleared or grayed; status bar shows 0 / N filtered.)*
 - How are events at the boundary of a time-range filter handled (inclusive vs exclusive)? *(Resolved: inclusive on both start and end timestamps.)*
-- What happens when the DBA opens duplicate or overlapping binlog files from the same server sequence?
+- What happens when the DBA opens duplicate or overlapping binlog files from the same server sequence? *(Resolved: allow duplicates in v1; show source path in list column; no deduplication.)*
 
 ## Requirements *(mandatory)*
 

@@ -35,18 +35,20 @@ Empty start (in-session open):
 
 ### VS-1 Open Binlogs (P1)
 
-1. Launch with one valid binlog via CLI → events begin appearing in list.
-2. Press `o`, add a second valid binlog → merged chronological list grows.
+1. Launch with one valid binlog via CLI → source registered; status bar shows file path; app does not crash.
+2. Press `o`, add a second valid binlog → both sources registered in session (visible in status).
 3. Launch with an invalid path → clear error; app remains usable if other files valid.
-4. Launch with no args, open file in-session → same behavior as CLI open.
+4. Launch with no args, open file in-session → source registered same as CLI open.
 
-**Pass**: All four cases behave per [spec.md](./spec.md) User Story 1.
+**Pass**: All four cases behave per [spec.md](./spec.md) User Story 1. Event list checks belong to VS-2.
 
 ### VS-2 Browse Events (P2)
 
 1. Confirm list shows only INSERT/UPDATE/DELETE/DDL (no Rotate/GTID noise).
-2. Verify timestamps ascend; multi-file merge is chronological.
+2. Verify timestamps ascend; with two sources open, merged list is chronological across both files.
 3. Navigate large sample with ↑/↓ and PgUp/PgDn — cursor visible, no multi-second stalls.
+4. Open a housekeeping-only or empty-of-changes binlog → empty-index message shown; source stays registered.
+5. Simulate or use a truncated/corrupt binlog mid-file → affected source shows error; other sources remain browsable.
 
 **Pass**: User Story 2 acceptance scenarios.
 
