@@ -3,6 +3,43 @@ alwaysApply: true
 ---
 
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+# MySQL Binlog Explorer — Development Context
+
+Read `.specify/memory/constitution.md` for governing principles.
+
+## Project
+
+MySQL Binlog Explorer: a Go TUI tool for DBAs to investigate MySQL binary logs
+("Wireshark for database change events"). Scope is exploration and forensics, not
+a mysqlbinlog wrapper.
+
+## Technology Stack (mandatory)
+
+- **Language**: Go only
+- **TUI**: Bubble Tea, Bubbles, Lip Gloss
+- **Distribution**: Single self-contained executable
+- **Prohibited** (unless constitution amended): React, Angular, Vue, Electron,
+  Node.js, browser frontends, client/server architectures
+
+## Architecture
+
+```text
+cmd/binlog-explorer/
+internal/
+├── explorer/
+├── events/
+├── filters/
+├── sources/mysql/
+└── ui/
+```
+
+## Development Approach
+
+- TUI-first vertical slices (parser + model + UI + interaction)
+- SpecKit spec-driven development for major features
+- Manual validation with real binlog datasets (no automated tests)
+- Prefer simplicity, keyboard navigation, and information density
+
+For feature-specific structure and commands, read the current feature plan at
+`specs/[###-feature-name]/plan.md`.
 <!-- SPECKIT END -->

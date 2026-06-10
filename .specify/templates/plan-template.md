@@ -18,17 +18,17 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
+**Language/Version**: Go [version or NEEDS CLARIFICATION]
 
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
+**Primary Dependencies**: Bubble Tea, Bubbles, Lip Gloss [+ others or NEEDS CLARIFICATION]
 
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+**Storage**: File-based (MySQL binary logs); in-memory indexes/caches as needed
 
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+**Testing**: Manual validation only (no automated test frameworks per constitution)
 
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Target Platform**: Terminal (Linux/macOS/Windows); single self-contained executable
 
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
+**Project Type**: TUI desktop application (Go native)
 
 **Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
 
@@ -40,7 +40,18 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Reference: `.specify/memory/constitution.md`
+
+- [ ] **DBA First**: Feature improves investigation productivity for experienced DBAs
+- [ ] **Go Native**: Solution stays in Go; no prohibited web/Electron/Node stacks
+- [ ] **TUI First**: Delivered as a working TUI slice, not CLI-only placeholder
+- [ ] **Explorer, Not Viewer**: Answers investigation questions, not raw log dump
+- [ ] **Incremental Development**: Vertical slice (parser/model/UI/interaction) defined
+- [ ] **Simplicity Over Engineering**: Simplest viable design chosen; complexity justified
+- [ ] **Performance Awareness**: Large binlog files considered; streaming where practical
+- [ ] **Pragmatic Extensibility**: No speculative plugin/parser-factory architecture
+- [ ] **Spec-Driven Development**: Spec exists and scope is bounded
+- [ ] **No Automated Testing**: Validation plan uses manual real-world datasets only
 
 ## Project Structure
 
@@ -65,39 +76,16 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+cmd/
+└── binlog-explorer/     # Application entry point
 
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+internal/
+├── explorer/            # Investigation workflows and navigation
+├── events/              # Change event models
+├── filters/             # Filtering and search
+├── sources/
+│   └── mysql/           # MySQL binlog parsing and source integration
+└── ui/                  # Bubble Tea TUI components and layouts
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real

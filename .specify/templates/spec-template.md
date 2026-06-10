@@ -8,19 +8,17 @@
 
 **Input**: User description: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Manual Validation *(mandatory)*
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
+  Each user story/journey must be INDEPENDENTLY VALIDATABLE - meaning if you implement
+  just ONE of them, you should still have a viable MVP that delivers value.
+
+  Validation is manual per constitution (Principle XII): use real binlog datasets and
+  DBA investigation workflows. Do NOT specify automated test suites.
 
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
 -->
 
 ### User Story 1 - [Brief Title] (Priority: P1)
@@ -29,7 +27,7 @@
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**Independent Validation**: [Describe how a DBA can manually verify this story with real binlog data - e.g., "Open sample binlog, filter by table X, confirm transaction Y is visible"]
 
 **Acceptance Scenarios**:
 
@@ -44,7 +42,7 @@
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
-**Independent Test**: [Describe how this can be tested independently]
+**Independent Validation**: [Describe how a DBA can manually verify this story with real binlog data]
 
 **Acceptance Scenarios**:
 
@@ -58,7 +56,7 @@
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
-**Independent Test**: [Describe how this can be tested independently]
+**Independent Validation**: [Describe how a DBA can manually verify this story with real binlog data]
 
 **Acceptance Scenarios**:
 
