@@ -40,6 +40,14 @@ internal/
 - Manual validation with real binlog datasets (no automated tests)
 - Prefer simplicity, keyboard navigation, and information density
 
-For feature-specific structure and commands, read the current feature plan at
-`specs/[###-feature-name]/plan.md`.
+## Active Feature Plan
+
+Read `specs/002-explore-binlog-events/plan.md` for implementation structure, phases, and technical decisions.
+
+Related artifacts:
+- Spec: `specs/002-explore-binlog-events/spec.md`
+- Research: `specs/002-explore-binlog-events/research.md`
+- Data model: `specs/002-explore-binlog-events/data-model.md`
+- Contracts: `specs/002-explore-binlog-events/contracts/`
+- Manual validation: `specs/002-explore-binlog-events/quickstart.md`
 <!-- SPECKIT END -->
