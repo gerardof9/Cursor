@@ -1,6 +1,7 @@
 # Binaries
 bin/
-binlog-explorer
+/binlog-explorer
+/binlog-explorer.exe
 *.exe
 *.exe~
 *.dll
