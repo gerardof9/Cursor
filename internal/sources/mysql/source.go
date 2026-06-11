@@ -1,9 +1,11 @@
 package mysql
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -22,15 +24,15 @@ const (
 
 // Source is an opened MySQL binlog file.
 type Source struct {
-	ID          string
-	Path        string
-	file        *os.File
-	FileSize    int64
-	State       SourceState
-	Error       string
+	ID           string
+	Path         string
+	file         *os.File
+	FileSize     int64
+	State        SourceState
+	Error        string
 	IndexedCount int
-	BytesRead   int64
-	parser      *replication.BinlogParser
+	BytesRead    int64
+	parser       *replication.BinlogParser
 }
 
 // OpenSource validates and opens a binlog file for indexing and detail reload.
@@ -65,21 +67,46 @@ func OpenSource(path string) (*Source, error) {
 		parser:   parser,
 	}
 
-	// Validate by reading format description event.
-	if _, err := parser.Parse(f); err != nil {
+	if err := validateBinlogHeader(f, parser); err != nil {
 		f.Close()
 		return nil, fmt.Errorf("parse binlog header: %w", err)
 	}
-	if _, err := f.Seek(0, 0); err != nil {
-		f.Close()
-		return nil, fmt.Errorf("rewind file: %w", err)
+
+	if pos, err := f.Seek(0, io.SeekCurrent); err == nil {
+		src.BytesRead = pos
 	}
-	src.parser = replication.NewBinlogParser()
-	src.parser.SetVerifyChecksum(true)
-	src.BytesRead = 0
 
 	src.State = StateIndexing
 	return src, nil
+}
+
+func validateBinlogHeader(f *os.File, parser *replication.BinlogParser) error {
+	if _, err := f.Seek(0, io.SeekStart); err != nil {
+		return fmt.Errorf("rewind file: %w", err)
+	}
+
+	hdr := make([]byte, 4)
+	if _, err := io.ReadFull(f, hdr); err != nil {
+		return fmt.Errorf("read magic: %w", err)
+	}
+	if !bytes.Equal(hdr, replication.BinLogFileHeader) {
+		return fmt.Errorf("not a valid MySQL binlog file")
+	}
+
+	var gotFormat bool
+	_, err := parser.ParseSingleEvent(f, func(ev *replication.BinlogEvent) error {
+		if _, ok := ev.Event.(*replication.FormatDescriptionEvent); ok {
+			gotFormat = true
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	if !gotFormat {
+		return fmt.Errorf("missing format description event")
+	}
+	return nil
 }
 
 func sourceID(path string) string {

@@ -34,24 +34,25 @@ func IndexStream(src *Source, emit func(events.EventSummary)) error {
 			return err
 		}
 
-		ev, err := parser.Parse(f)
-		if err == io.EOF {
-			src.MarkReady()
+		done, err := parser.ParseSingleEvent(f, func(ev *replication.BinlogEvent) error {
+			summary, ok := mapEvent(ev, src, offset)
+			if ok {
+				emit(summary)
+				src.IndexedCount++
+			}
 			return nil
-		}
+		})
 		if err != nil {
 			src.MarkError(err)
 			return fmt.Errorf("parse at offset %d: %w", offset, err)
 		}
+		if done {
+			src.MarkReady()
+			return nil
+		}
 
 		if pos, err := f.Seek(0, io.SeekCurrent); err == nil {
 			src.BytesRead = pos
-		}
-
-		summary, ok := mapEvent(ev, src, offset)
-		if ok {
-			emit(summary)
-			src.IndexedCount++
 		}
 	}
 }

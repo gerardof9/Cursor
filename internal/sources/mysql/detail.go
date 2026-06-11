@@ -3,7 +3,6 @@ package mysql
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/go-mysql-org/go-mysql/replication"
 
@@ -16,11 +15,7 @@ func LoadDetail(src *Source, summary events.EventSummary) (events.EventDetail, e
 		return events.EventDetail{}, fmt.Errorf("source not open")
 	}
 
-	if _, err := src.file.Seek(summary.Offset, io.SeekStart); err != nil {
-		return events.EventDetail{}, fmt.Errorf("seek: %w", err)
-	}
-
-	ev, err := src.parser.Parse(src.file)
+	ev, err := parseEventAtOffset(src, summary.Offset)
 	if err != nil {
 		return events.EventDetail{}, fmt.Errorf("parse detail: %w", err)
 	}
@@ -69,6 +64,47 @@ func LoadDetail(src *Source, summary events.EventSummary) (events.EventDetail, e
 	}
 
 	return detail, nil
+}
+
+// parseEventAtOffset replays the binlog from the format description through
+// targetOffset so table-map state is available for row events.
+func parseEventAtOffset(src *Source, targetOffset int64) (*replication.BinlogEvent, error) {
+	parser := replication.NewBinlogParser()
+	parser.SetVerifyChecksum(true)
+
+	f := src.file
+	if _, err := f.Seek(4, io.SeekStart); err != nil {
+		return nil, fmt.Errorf("seek: %w", err)
+	}
+
+	var found *replication.BinlogEvent
+	for {
+		offset, err := f.Seek(0, io.SeekCurrent)
+		if err != nil {
+			return nil, fmt.Errorf("tell: %w", err)
+		}
+		if offset > targetOffset {
+			return nil, fmt.Errorf("event not found at offset %d", targetOffset)
+		}
+
+		done, err := parser.ParseSingleEvent(f, func(ev *replication.BinlogEvent) error {
+			if offset == targetOffset {
+				found = ev
+			}
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+		if found != nil {
+			return found, nil
+		}
+		if done {
+			break
+		}
+	}
+
+	return nil, fmt.Errorf("event not found at offset %d", targetOffset)
 }
 
 func formatRow(row []interface{}) []string {
