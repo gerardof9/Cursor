@@ -3,8 +3,6 @@ package mysql
 import (
 	"fmt"
 	"io"
-	"strings"
-	"time"
 
 	"github.com/go-mysql-org/go-mysql/replication"
 
@@ -21,11 +19,33 @@ type IndexBatch struct {
 	Err       error
 }
 
-// IndexStream parses user-data events from the current file position.
-func IndexStream(src *Source, emit func(events.EventSummary)) error {
+// IndexStream parses user-data events within scope from the current file position.
+// When scope is nil, all events are indexed (legacy behavior).
+func IndexStream(src *Source, scope *events.InvestigationScope, emit func(events.EventSummary)) error {
+	return src.withFileLock(func() error {
+		return indexStreamLocked(src, scope, emit)
+	})
+}
+
+func indexStreamLocked(src *Source, scope *events.InvestigationScope, emit func(events.EventSummary)) error {
 	src.State = StateIndexing
-	parser := src.parser
+	src.IndexedCount = 0
+	src.ActiveScope = scope
+
+	if _, err := src.file.Seek(0, io.SeekStart); err != nil {
+		src.MarkError(err)
+		return fmt.Errorf("rewind file: %w", err)
+	}
+
+	magic := make([]byte, 4)
+	if _, err := io.ReadFull(src.file, magic); err != nil {
+		src.MarkError(err)
+		return fmt.Errorf("read magic: %w", err)
+	}
+
+	parser := src.newParser()
 	f := src.file
+	pastTo := false
 
 	for {
 		offset, err := f.Seek(0, io.SeekCurrent)
@@ -35,7 +55,26 @@ func IndexStream(src *Source, emit func(events.EventSummary)) error {
 		}
 
 		done, err := parser.ParseSingleEvent(f, func(ev *replication.BinlogEvent) error {
-			summary, ok := mapEvent(ev, src, offset)
+			if pastTo {
+				return nil
+			}
+
+			ts, userData := ClassifyEvent(ev)
+			if scope != nil {
+				if ts.Before(scope.From) {
+					return nil
+				}
+				if ts.After(scope.To) {
+					pastTo = true
+					return nil
+				}
+			}
+
+			if !userData {
+				return nil
+			}
+
+			summary, ok := MapEvent(ev, src, offset)
 			if ok {
 				emit(summary)
 				src.IndexedCount++
@@ -46,7 +85,7 @@ func IndexStream(src *Source, emit func(events.EventSummary)) error {
 			src.MarkError(err)
 			return fmt.Errorf("parse at offset %d: %w", offset, err)
 		}
-		if done {
+		if done || pastTo {
 			src.MarkReady()
 			return nil
 		}
@@ -54,104 +93,5 @@ func IndexStream(src *Source, emit func(events.EventSummary)) error {
 		if pos, err := f.Seek(0, io.SeekCurrent); err == nil {
 			src.BytesRead = pos
 		}
-	}
-}
-
-func mapEvent(ev *replication.BinlogEvent, src *Source, offset int64) (events.EventSummary, bool) {
-	header := ev.Header
-	ts := time.Unix(int64(header.Timestamp), 0)
-
-	switch e := ev.Event.(type) {
-	case *replication.RowsEvent:
-		op := rowsOperation(e)
-		if op == events.OpUnknown {
-			return events.EventSummary{}, false
-		}
-		schemaName, tableName := tableNames(e.Table)
-		return events.EventSummary{
-			ID:         0,
-			SourceID:   src.ID,
-			Offset:     offset,
-			Timestamp:  ts,
-			Operation:  op,
-			Schema:     schemaName,
-			Table:      tableName,
-			Format:     events.FormatRow,
-			SourcePath: src.Path,
-		}, true
-
-	case *replication.QueryEvent:
-		query := strings.TrimSpace(string(e.Query))
-		upper := strings.ToUpper(query)
-		if isHousekeepingQuery(upper) {
-			return events.EventSummary{}, false
-		}
-		op := queryOperation(upper)
-		if op == events.OpUnknown {
-			return events.EventSummary{}, false
-		}
-		schemaName := string(e.Schema)
-		return events.EventSummary{
-			ID:         0,
-			SourceID:   src.ID,
-			Offset:     offset,
-			Timestamp:  ts,
-			Operation:  op,
-			Schema:     schemaName,
-			Format:     events.FormatStatement,
-			SourcePath: src.Path,
-		}, true
-	}
-
-	return events.EventSummary{}, false
-}
-
-func rowsOperation(e *replication.RowsEvent) events.Operation {
-	switch e.Type() {
-	case replication.EnumRowsEventTypeInsert:
-		return events.OpInsert
-	case replication.EnumRowsEventTypeUpdate:
-		return events.OpUpdate
-	case replication.EnumRowsEventTypeDelete:
-		return events.OpDelete
-	default:
-		return events.OpUnknown
-	}
-}
-
-func tableNames(t *replication.TableMapEvent) (string, string) {
-	if t == nil {
-		return "", ""
-	}
-	return string(t.Schema), string(t.Table)
-}
-
-func isHousekeepingQuery(upper string) bool {
-	switch {
-	case upper == "BEGIN", upper == "COMMIT", upper == "ROLLBACK":
-		return true
-	case strings.HasPrefix(upper, "SET "), strings.HasPrefix(upper, "USE "):
-		return true
-	default:
-		return false
-	}
-}
-
-func queryOperation(upper string) events.Operation {
-	switch {
-	case strings.HasPrefix(upper, "INSERT"):
-		return events.OpInsert
-	case strings.HasPrefix(upper, "UPDATE"):
-		return events.OpUpdate
-	case strings.HasPrefix(upper, "DELETE"):
-		return events.OpDelete
-	case strings.HasPrefix(upper, "CREATE"),
-		strings.HasPrefix(upper, "ALTER"),
-		strings.HasPrefix(upper, "DROP"),
-		strings.HasPrefix(upper, "TRUNCATE"),
-		strings.HasPrefix(upper, "RENAME"):
-		return events.OpDDL
-	default:
-		return events.OpDDL
 	}
 }

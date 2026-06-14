@@ -8,18 +8,22 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/go-mysql-org/go-mysql/replication"
+
+	"db-log-explorer/internal/events"
 )
 
 // SourceState tracks binlog source lifecycle.
 type SourceState string
 
 const (
-	StateOpening  SourceState = "opening"
-	StateIndexing SourceState = "indexing"
-	StateReady    SourceState = "ready"
-	StateError    SourceState = "error"
+	StateOpening   SourceState = "opening"
+	StateAnalyzing SourceState = "analyzing"
+	StateIndexing  SourceState = "indexing"
+	StateReady     SourceState = "ready"
+	StateError     SourceState = "error"
 )
 
 // Source is an opened MySQL binlog file.
@@ -32,7 +36,24 @@ type Source struct {
 	Error        string
 	IndexedCount int
 	BytesRead    int64
+	Analysis     *events.FileAnalysisResult
+	ActiveScope  *events.InvestigationScope
 	parser       *replication.BinlogParser
+	mu           sync.Mutex
+}
+
+// newParser returns a fresh binlog parser configured for this source.
+func (s *Source) newParser() *replication.BinlogParser {
+	p := replication.NewBinlogParser()
+	p.SetVerifyChecksum(true)
+	return p
+}
+
+// withFileLock serializes all reads on the shared binlog file handle.
+func (s *Source) withFileLock(fn func() error) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return fn()
 }
 
 // OpenSource validates and opens a binlog file for indexing and detail reload.
@@ -76,7 +97,7 @@ func OpenSource(path string) (*Source, error) {
 		src.BytesRead = pos
 	}
 
-	src.State = StateIndexing
+	src.State = StateAnalyzing
 	return src, nil
 }
 
@@ -143,6 +164,18 @@ func (s *Source) Close() error {
 		return s.file.Close()
 	}
 	return nil
+}
+
+// AnalysisProgress returns 0-100 analysis percent estimate.
+func (s *Source) AnalysisProgress() int {
+	if s.FileSize <= 0 {
+		return 0
+	}
+	pct := int(s.BytesRead * 100 / s.FileSize)
+	if pct > 99 {
+		return 99
+	}
+	return pct
 }
 
 // IndexProgress returns 0-100 indexing percent estimate.

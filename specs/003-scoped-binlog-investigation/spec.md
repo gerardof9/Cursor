@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-10
 
-**Status**: Draft
+**Status**: Clarified
 
 **Input**: User description: "Introduce a two-phase open workflow: file analysis pass, mandatory investigation scope selection, and scoped indexing with early stop. Preserve browse, inspect, and secondary filters from feature 002 while making time range a load criterion rather than only a post-index view filter."
 
@@ -14,7 +14,9 @@
 
 - Q: What happens when only one CLI date boundary (`--from` or `--to`) is provided? → A: Both boundaries are required when using CLI scope; if only one is provided, the application reports a clear error and does not begin indexing.
 - Q: How should narrowing the investigation scope behave in v1? → A: Any scope change replaces the in-memory index; narrowing within an already-indexed range may filter in memory as an optimization, but re-indexing on scope change is always acceptable and is the required fallback when in-memory narrowing cannot be proven safe.
-- Q: How does the DBA change investigation scope during a session? → A: Via a dedicated in-session scope selection flow (separate from table/operation filters); exact keybinding deferred to planning.
+- Q: How does the DBA change investigation scope during a session? → A: Via key `s` opening the investigation scope dialog (separate from table/operation filters opened with `f`).
+- Q: When the DBA opens an additional binlog file mid-session (`o`) while a scoped index already exists, what should happen? → A: Analyze the new file, merge analysis metadata into the session summary, show the scope dialog to confirm or adjust the investigation scope, then re-index all open sources with the confirmed scope.
+- Q: When CLI `--from`/`--to` falls outside the detected min/max timestamp span of opened binlog(s), what should happen? → A: Reject with a clear error; do not begin scoped indexing.
 
 ## User Scenarios & Manual Validation *(mandatory)*
 
@@ -108,7 +110,8 @@ As a DBA working over SSH on the database server, I want to pass a date range on
 1. **Given** binlog path(s) and both `--from` and `--to` are provided at launch, **When** the application starts, **Then** analysis runs, the provided range is applied as investigation scope, the scope dialog is skipped, and scoped indexing begins.
 2. **Given** binlog path(s) are provided without date flags, **When** the application starts, **Then** analysis runs and the scope dialog is shown before indexing (User Story 2).
 3. **Given** only one of `--from` or `--to` is provided, **When** launch is attempted, **Then** the application reports a clear error requiring both boundaries or neither.
-4. **Given** multiple binlog paths are provided at launch with partial open failures, **When** launch completes, **Then** behavior matches feature 002 (warnings for failures, continue with successful sources).
+4. **Given** both `--from` and `--to` are provided but fall outside the merged detected min/max timestamp span after analysis, **When** launch completes analysis, **Then** the application reports a clear error and does not begin scoped indexing.
+5. **Given** multiple binlog paths are provided at launch with partial open failures, **When** launch completes, **Then** behavior matches feature 002 (warnings for failures, continue with successful sources).
 
 ---
 
@@ -126,7 +129,8 @@ As a DBA, within my chosen time scope, I want to filter by table, schema, and op
 2. **Given** secondary filters are active, **When** the DBA inspects events in the filtered list, **Then** detail inspection works without removing filters.
 3. **Given** secondary filters are active, **When** the DBA clears filters, **Then** the full scoped index is restored (not the entire file unless scope is Entire file).
 4. **Given** the status bar shows event counts, **When** filters are active, **Then** counts display as `shown / scoped-total` (not entire-file total unless scope is Entire file).
-5. **Given** the DBA changes investigation scope, **When** scope is applied, **Then** secondary filters may reset or re-apply per planning; table/operation filter changes never trigger binlog re-parse.
+5. **Given** the DBA changes investigation scope, **When** scope is applied, **Then** secondary filters are cleared; table/operation filter changes never trigger binlog re-parse.
+6. **Given** a scoped index is already loaded, **When** the DBA opens an additional binlog file via `o`, **Then** the new file is analyzed, session analysis metadata is merged, the scope dialog is shown to confirm or adjust scope, and all open sources are re-indexed with the confirmed scope (replacing the prior index).
 
 ---
 
@@ -140,6 +144,8 @@ As a DBA, within my chosen time scope, I want to filter by table, schema, and op
 - What happens when approximate event count differs from final scoped count? *(Resolved: analysis count remains labeled approximate; final scoped count shown after indexing.)*
 - What happens when the DBA selects Entire file on a large file? *(Resolved: secondary warning with explicit confirmation required before indexing.)*
 - What happens when custom range extends beyond detected min/max? *(Resolved: validation error with clear message; scope not applied until corrected.)*
+- What happens when the DBA opens an additional binlog mid-session while a scoped index exists? *(Resolved: analyze new file, merge metadata, scope dialog to confirm/adjust, re-index all sources with confirmed scope.)*
+- What happens when CLI `--from`/`--to` is outside the detected file time span? *(Resolved: clear error; scoped indexing does not start.)*
 
 ## Requirements *(mandatory)*
 
@@ -156,8 +162,10 @@ As a DBA, within my chosen time scope, I want to filter by table, schema, and op
 - **FR-009**: System MUST apply investigation scope at parse time: index only events within `[From, To]` inclusive; skip events before `From`; stop parsing a source after `To` when timestamps are monotonic (best-effort).
 - **FR-010**: System MUST NOT populate the browse list until investigation scope is confirmed.
 - **FR-011**: System MUST support `--from` and `--to` CLI flags with inclusive boundaries; both flags MUST be provided together when using CLI scope, or neither for dialog-based scope.
+- **FR-011a**: When CLI `--from`/`--to` falls outside the merged detected min/max timestamp span after analysis, System MUST report a clear error and MUST NOT begin scoped indexing.
 - **FR-012**: System MUST skip the scope dialog when both CLI date boundaries are provided at launch with valid binlog path(s).
-- **FR-013**: System MUST allow changing investigation scope during an active session via a dedicated in-session flow separate from table/operation filters.
+- **FR-013**: System MUST allow changing investigation scope during an active session via key `s` (investigation scope dialog), separate from secondary filters (key `f`).
+- **FR-013a**: When an additional binlog is opened in-session while a scoped index exists, System MUST analyze the new source, merge analysis metadata, present the scope dialog to confirm or adjust scope, and re-index all open sources with the confirmed scope (replacing the prior index).
 - **FR-014**: Changing investigation scope MUST replace the in-memory browse index for affected sources; widening scope or selecting Entire file MUST trigger re-parse.
 - **FR-015**: System MUST preserve feature 002 behaviors for browse, on-demand detail, multi-source chronological merge, housekeeping exclusion, row/statement format support, and inclusive time boundaries within the active scope.
 - **FR-016**: Secondary filters (schema, table, operation type) MUST apply in memory over the scoped index without binlog re-parse.

@@ -2,7 +2,6 @@ package filters
 
 import (
 	"strings"
-	"time"
 
 	"db-log-explorer/internal/events"
 )
@@ -12,12 +11,10 @@ type Criteria struct {
 	Operations []events.Operation
 	Schema     string
 	Table      string
-	TimeStart  *time.Time
-	TimeEnd    *time.Time
 }
 
 func (c Criteria) Active() bool {
-	return len(c.Operations) > 0 || c.Schema != "" || c.Table != "" || c.TimeStart != nil || c.TimeEnd != nil
+	return len(c.Operations) > 0 || c.Schema != "" || c.Table != ""
 }
 
 func (c Criteria) Summary() string {
@@ -34,12 +31,6 @@ func (c Criteria) Summary() string {
 	}
 	if c.Table != "" {
 		parts = append(parts, "table="+c.Table)
-	}
-	if c.TimeStart != nil {
-		parts = append(parts, "from="+c.TimeStart.Format("2006-01-02 15:04:05"))
-	}
-	if c.TimeEnd != nil {
-		parts = append(parts, "to="+c.TimeEnd.Format("2006-01-02 15:04:05"))
 	}
 	if len(parts) == 0 {
 		return ""
@@ -74,12 +65,6 @@ func matches(ev events.EventSummary, c Criteria) bool {
 		return false
 	}
 	if c.Table != "" && !tableMatches(ev, c.Table) {
-		return false
-	}
-	if c.TimeStart != nil && ev.Timestamp.Before(*c.TimeStart) {
-		return false
-	}
-	if c.TimeEnd != nil && ev.Timestamp.After(*c.TimeEnd) {
 		return false
 	}
 	return true

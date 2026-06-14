@@ -15,7 +15,12 @@ func LoadDetail(src *Source, summary events.EventSummary) (events.EventDetail, e
 		return events.EventDetail{}, fmt.Errorf("source not open")
 	}
 
-	ev, err := parseEventAtOffset(src, summary.Offset)
+	var ev *replication.BinlogEvent
+	err := src.withFileLock(func() error {
+		var err error
+		ev, err = parseEventAtOffset(src, summary.Offset)
+		return err
+	})
 	if err != nil {
 		return events.EventDetail{}, fmt.Errorf("parse detail: %w", err)
 	}
@@ -69,9 +74,7 @@ func LoadDetail(src *Source, summary events.EventSummary) (events.EventDetail, e
 // parseEventAtOffset replays the binlog from the format description through
 // targetOffset so table-map state is available for row events.
 func parseEventAtOffset(src *Source, targetOffset int64) (*replication.BinlogEvent, error) {
-	parser := replication.NewBinlogParser()
-	parser.SetVerifyChecksum(true)
-
+	parser := src.newParser()
 	f := src.file
 	if _, err := f.Seek(4, io.SeekStart); err != nil {
 		return nil, fmt.Errorf("seek: %w", err)

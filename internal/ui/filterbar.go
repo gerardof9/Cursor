@@ -2,7 +2,6 @@ package ui
 
 import (
 	"strings"
-	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/lipgloss"
@@ -18,8 +17,6 @@ const (
 	FieldOps FilterField = iota
 	FieldSchema
 	FieldTable
-	FieldStart
-	FieldEnd
 )
 
 // FilterModel is the filter editor modal.
@@ -27,8 +24,6 @@ type FilterModel struct {
 	opsInput    textinput.Model
 	schemaInput textinput.Model
 	tableInput  textinput.Model
-	startInput  textinput.Model
-	endInput    textinput.Model
 	field       FilterField
 }
 
@@ -45,8 +40,6 @@ func NewFilterModel() FilterModel {
 		opsInput:    mk("Ops: ", "INSERT,UPDATE,DELETE,DDL"),
 		schemaInput: mk("Schema: ", "mydb"),
 		tableInput:  mk("Table: ", "orders or mydb.orders"),
-		startInput:  mk("From: ", "2006-01-02 15:04:05"),
-		endInput:    mk("To: ", "2006-01-02 15:04:05"),
 		field:       FieldOps,
 	}
 	m.opsInput.Focus()
@@ -59,10 +52,6 @@ func (m *FilterModel) activeInput() *textinput.Model {
 		return &m.schemaInput
 	case FieldTable:
 		return &m.tableInput
-	case FieldStart:
-		return &m.startInput
-	case FieldEnd:
-		return &m.endInput
 	default:
 		return &m.opsInput
 	}
@@ -71,7 +60,7 @@ func (m *FilterModel) activeInput() *textinput.Model {
 // CycleField advances focus (Tab).
 func (m *FilterModel) CycleField() {
 	m.blurAll()
-	m.field = (m.field + 1) % 5
+	m.field = (m.field + 1) % 3
 	m.activeInput().Focus()
 }
 
@@ -79,8 +68,6 @@ func (m *FilterModel) blurAll() {
 	m.opsInput.Blur()
 	m.schemaInput.Blur()
 	m.tableInput.Blur()
-	m.startInput.Blur()
-	m.endInput.Blur()
 }
 
 // ToCriteria builds filter criteria from inputs.
@@ -98,16 +85,6 @@ func (m FilterModel) ToCriteria() filters.Criteria {
 			}
 		}
 	}
-	if t := strings.TrimSpace(m.startInput.Value()); t != "" {
-		if parsed, err := time.Parse("2006-01-02 15:04:05", t); err == nil {
-			c.TimeStart = &parsed
-		}
-	}
-	if t := strings.TrimSpace(m.endInput.Value()); t != "" {
-		if parsed, err := time.Parse("2006-01-02 15:04:05", t); err == nil {
-			c.TimeEnd = &parsed
-		}
-	}
 	return c
 }
 
@@ -123,26 +100,16 @@ func (m *FilterModel) LoadFromCriteria(c filters.Criteria) {
 	}
 	m.schemaInput.SetValue(c.Schema)
 	m.tableInput.SetValue(c.Table)
-	m.startInput.SetValue("")
-	m.endInput.SetValue("")
-	if c.TimeStart != nil {
-		m.startInput.SetValue(c.TimeStart.Format("2006-01-02 15:04:05"))
-	}
-	if c.TimeEnd != nil {
-		m.endInput.SetValue(c.TimeEnd.Format("2006-01-02 15:04:05"))
-	}
 }
 
 // Render draws the filter modal.
 func (m FilterModel) Render() string {
 	box := lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).Padding(0, 1)
 	body := strings.Join([]string{
-		"Filter events (Tab next field, Enter apply, Esc cancel)",
+		"Secondary filter (Tab next field, Enter apply, Esc cancel)",
 		m.opsInput.View(),
 		m.schemaInput.View(),
 		m.tableInput.View(),
-		m.startInput.View(),
-		m.endInput.View(),
 	}, "\n")
 	return box.Render(body)
 }

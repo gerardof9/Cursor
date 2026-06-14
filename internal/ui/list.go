@@ -18,7 +18,7 @@ var (
 )
 
 // RenderList draws the event list pane.
-func RenderList(width, height int, items []events.EventSummary, selected int, emptyMsg string) string {
+func RenderList(width, height int, items []events.EventSummary, selected, listOffset int, emptyMsg string) string {
 	if emptyMsg != "" {
 		return listDimStyle.Width(width).Render(emptyMsg)
 	}
@@ -30,9 +30,15 @@ func RenderList(width, height int, items []events.EventSummary, selected int, em
 	lines := []string{listHeaderStyle.Render(truncate(header, width))}
 
 	maxRows := height - 1
-	start := 0
-	if selected >= maxRows {
-		start = selected - maxRows + 1
+	if maxRows < 1 {
+		maxRows = 1
+	}
+	start := listOffset
+	if start < 0 {
+		start = 0
+	}
+	if start > len(items) {
+		start = len(items)
 	}
 	end := start + maxRows
 	if end > len(items) {

@@ -42,12 +42,12 @@ internal/
 
 ## Active Feature Plan
 
-Read `specs/002-explore-binlog-events/plan.md` for implementation structure, phases, and technical decisions.
+Read `specs/003-scoped-binlog-investigation/plan.md` for implementation structure, phases, and technical decisions.
 
 Related artifacts:
-- Spec: `specs/002-explore-binlog-events/spec.md`
-- Research: `specs/002-explore-binlog-events/research.md`
-- Data model: `specs/002-explore-binlog-events/data-model.md`
-- Contracts: `specs/002-explore-binlog-events/contracts/`
-- Manual validation: `specs/002-explore-binlog-events/quickstart.md`
+- Spec: `specs/003-scoped-binlog-investigation/spec.md`
+- Research: `specs/003-scoped-binlog-investigation/research.md`
+- Data model: `specs/003-scoped-binlog-investigation/data-model.md`
+- Contracts: `specs/003-scoped-binlog-investigation/contracts/`
+- Manual validation: `specs/003-scoped-binlog-investigation/quickstart.md`
 <!-- SPECKIT END -->
